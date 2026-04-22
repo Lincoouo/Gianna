@@ -158,8 +158,8 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         // 精确分配上下高度，让其在80高度中视觉居中
-        ctx.fillText('祝甘霖', 80, 24); 
-        ctx.fillText('生日快乐！', 80, 56); 
+        ctx.fillText('祝甘霖', 80, 26); 
+        ctx.fillText('生日快乐！', 80, 54); 
         
         const data = ctx.getImageData(0, 0, 160, 80).data;
         for (let i = 0; i < data.length; i += 4) {
@@ -324,12 +324,11 @@
                 
                 if (randF < 0.76) {
                     // --- 1. 花朵本身 ---
-                    // 减少螺旋圈数，使得花朵横向分布不会过大
                     const theta = Math.random() * Math.PI * 18; 
                     const radSpread = Math.random(); 
 
 
-                    const rBase = theta * 0.9; // 降低半径扩大系数
+                    const rBase = theta * 0.9; 
                     const petalCut = Math.pow(Math.abs(Math.sin(theta * 1.6)), 0.5); 
                     const r = rBase + radSpread * 12 * petalCut; 
 
@@ -338,7 +337,6 @@
                     z = r * Math.sin(theta);
 
 
-                    // 压平抛物面参数，防止花朵高度冲出屏幕
                     const bowl = Math.pow(r, 2) / 40;        
                     const centerBud = 25 * Math.exp(-r / 8); 
                     const curl = radSpread * 6 * petalCut;   
@@ -352,9 +350,8 @@
                     z += (Math.random() - 0.5) * 1.0;
                 } else if (randF < 0.88) {
                     // --- 2. 花茎 ---
-                    // 增加花茎的极限长度 (从75提升到120)
                     const h = Math.random() * 120; 
-                    const curve = Math.sin(h * 0.03) * 6; // 更大的优美曲线弯曲
+                    const curve = Math.sin(h * 0.03) * 6; 
                     const angle = Math.random() * Math.PI * 2;
                     const rStem = Math.random() * 2.0; 
                     
@@ -370,17 +367,17 @@
                     const l = Math.random(); 
                     const w = Math.random(); 
                     
-                    // 叶片尺寸全面放大
-                    const leafLen = 40;
-                    const leafWidth = 12 * Math.sin(l * Math.PI) * (w - 0.5);
+                    // 【叶片尺寸再增大】
+                    const leafLen = 65; 
+                    const leafWidth = 22 * Math.sin(l * Math.PI) * (w - 0.5); 
                     
                     if (isRight) {
                         x = stemX + l * leafLen;
-                        y = (20 - leafPos) + l * 20 + (Math.random() - 0.5); 
+                        y = (20 - leafPos) + l * 30 + (Math.random() - 0.5); // 加大了上扬角度
                         z = leafWidth + (Math.random() - 0.5);
                     } else {
                         x = stemX - l * leafLen;
-                        y = (20 - leafPos) + l * 15 + (Math.random() - 0.5);  
+                        y = (20 - leafPos) + l * 25 + (Math.random() - 0.5); // 加大了上扬角度
                         z = leafWidth + (Math.random() - 0.5);
                     }
                 }
