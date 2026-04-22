@@ -14,15 +14,17 @@
         #canvas-container {
             width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;
         }
+        /* 兼容老版本iOS的视频标签要求 */
         video { display: none; }
         
         #status {
-            position: absolute; top: 50px; left: 50%; transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.8); font-size: 13px; font-weight: 300; letter-spacing: 2px;
-            z-index: 10; pointer-events: none; transition: opacity 1s ease;
-            animation: breathe 2s infinite ease-in-out;
+            position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
+            background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(8px);
+            padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255, 255, 255, 0.9); font-size: 13px; font-weight: 400; letter-spacing: 1px;
+            z-index: 10; pointer-events: none; transition: opacity 0.5s ease;
+            white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
-        @keyframes breathe { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
         #menu-btn {
             position: absolute; right: 25px; bottom: 35px; z-index: 20;
@@ -32,9 +34,9 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex; justify-content: center; align-items: center;
             font-size: 24px; color: white; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s;
         }
-        #menu-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.2); }
+        #menu-btn:active { transform: scale(0.9); }
         
         #ui-panel {
             position: absolute; right: 20px; bottom: 95px; width: 280px;
@@ -43,7 +45,6 @@
             -webkit-backdrop-filter: blur(25px) saturate(150%);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px;
             padding: 24px; box-sizing: border-box; z-index: 15;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
             opacity: 0; transform: translateY(20px) scale(0.95); pointer-events: none;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); 
             transform-origin: bottom right;
@@ -52,10 +53,7 @@
 
         .ui-section { margin-bottom: 20px; }
         .ui-section:last-child { margin-bottom: 0; }
-        .ui-label { 
-            font-size: 13px; color: rgba(255,255,255,0.6); 
-            margin-bottom: 12px; display: block; font-weight: 500;
-        }
+        .ui-label { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 12px; display: block; font-weight: 500; }
         
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn {
@@ -63,19 +61,11 @@
             color: rgba(255, 255, 255, 0.9); padding: 12px 0; border-radius: 14px; 
             cursor: pointer; font-size: 13px; transition: all 0.2s; font-weight: 500;
         }
-        .btn.active { 
-            background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.3); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+        .btn.active { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.3); }
         
         .color-row { display: flex; align-items: center; justify-content: space-between; }
-        .color-picker-wrapper {
-            width: 40px; height: 40px; border-radius: 50%; overflow: hidden;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        input[type="color"] { 
-            width: 150%; height: 150%; transform: translate(-15%, -15%); border: none; cursor: pointer;
-        }
+        .color-picker-wrapper { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); }
+        input[type="color"] { width: 150%; height: 150%; transform: translate(-15%, -15%); border: none; cursor: pointer; }
 
         @media (max-width: 600px) {
             #menu-btn { right: 20px; bottom: max(30px, env(safe-area-inset-bottom)); }
@@ -85,14 +75,15 @@
 </head>
 <body>
 
-    <div id="status">正在唤醒 AI 引擎...</div>
+    <!-- 进度显示系统 -->
+    <div id="status">系统初始化中...</div>
     <div id="canvas-container"></div>
-    <video id="video" playsinline autoplay muted></video>
+    
+    <!-- webkit-playsinline 是给老款 iPhone 用的强制参数 -->
+    <video id="video" playsinline webkit-playsinline autoplay muted></video>
 
-    <!-- 悬浮触发按钮 -->
     <div id="menu-btn">🪄</div>
 
-    <!-- 隐藏的毛玻璃面板 -->
     <div id="ui-panel">
         <div class="ui-section">
             <span class="ui-label">浪漫与信仰</span>
@@ -105,52 +96,30 @@
                 <button class="btn" data-shape="fireworks">🎆 绚烂烟火</button>
             </div>
         </div>
-
         <div class="ui-section color-row">
             <span class="ui-label" style="margin:0;">粒子颜色</span>
-            <div class="color-picker-wrapper">
-                <input type="color" id="color-picker" value="#ff3366">
-            </div>
+            <div class="color-picker-wrapper"><input type="color" id="color-picker" value="#ff3366"></div>
         </div>
     </div>
 
-    <!-- 引入库：彻底替换为国内访问更稳定的 unpkg 源 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/@mediapipe/hands/hands.js"></script>
 
     <script>
         const PARTICLE_COUNT = 8000; 
-        let currentShape = 'heart';
-        let targetScale = 1.0;
-        let currentScale = 1.0;
-        let isHandDetected = false;
+        let currentShape = 'heart'; let targetScale = 1.0; let currentScale = 1.0; let isHandDetected = false;
         
-        // --- UI 逻辑控制 ---
         const menuBtn = document.getElementById('menu-btn');
         const uiPanel = document.getElementById('ui-panel');
         const canvasContainer = document.getElementById('canvas-container');
 
-        menuBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            uiPanel.classList.toggle('show');
-        });
+        menuBtn.addEventListener('click', (e) => { e.stopPropagation(); uiPanel.classList.toggle('show'); });
 
-        document.body.addEventListener('touchstart', (e) => { 
-            if(e.target !== menuBtn && !uiPanel.contains(e.target)) {
-                uiPanel.classList.remove('show'); 
-            }
-            const videoEl = document.getElementById('video');
-            if(videoEl.paused) videoEl.play(); 
-        });
-
-        // --- Three.js 初始化 ---
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x000000, 0.002);
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 150;
+        // --- 核心 Three.js 系统 (与上版相同) ---
+        const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x000000, 0.002);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.z = 150;
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
         canvasContainer.appendChild(renderer.domElement);
 
         function generatePositions(shape) {
@@ -158,48 +127,21 @@
             for (let i = 0; i < PARTICLE_COUNT; i++) {
                 let x, y, z;
                 if (shape === 'heart') {
-                    // 爱心
                     const t = Math.random() * Math.PI * 2, r = Math.random() * 2 + 0.5;
-                    x = 16 * Math.pow(Math.sin(t), 3) * (r*0.6) * 3;
-                    y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * (r*0.6) * 3;
-                    z = (Math.random() - 0.5) * 10;
+                    x = 16 * Math.pow(Math.sin(t), 3) * (r*0.6) * 3; y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * (r*0.6) * 3; z = (Math.random() - 0.5) * 10;
                 } else if (shape === 'butterfly') {
-                    // 浪漫蝴蝶 (基于蝴蝶曲线方程)
-                    const t = Math.random() * Math.PI * 24; // 需要多圈迭代
-                    const s = Math.sin(t / 12);
-                    const s5 = s * s * s * s * s;
-                    const r = Math.exp(Math.cos(t)) - 2 * Math.cos(4 * t) + s5;
-                    const scatter = Math.random() * 2;
-                    x = (r * Math.sin(t) * 9) + (Math.random() - 0.5) * scatter;
-                    y = (r * Math.cos(t) * 9) + (Math.random() - 0.5) * scatter;
-                    z = (Math.random() - 0.5) * 12;
+                    const t = Math.random() * Math.PI * 24, s = Math.sin(t / 12), s5 = s * s * s * s * s, r = Math.exp(Math.cos(t)) - 2 * Math.cos(4 * t) + s5, scatter = Math.random() * 2;
+                    x = (r * Math.sin(t) * 9) + (Math.random() - 0.5) * scatter; y = (r * Math.cos(t) * 9) + (Math.random() - 0.5) * scatter; z = (Math.random() - 0.5) * 12;
                 } else if (shape === 'infinity') {
-                    // 永恒符号 ∞ (伯努利双纽线的三维投射)
-                    const t = Math.random() * Math.PI * 2;
-                    const scale = 35 + Math.random() * 10; // 产生粗细渐变
-                    const denominator = 1 + Math.sin(t) * Math.sin(t);
-                    x = scale * Math.cos(t) / denominator;
-                    y = scale * Math.sin(t) * Math.cos(t) / denominator;
-                    z = 10 * Math.sin(t * 2) + (Math.random() - 0.5) * 8; // Z轴扭曲增加立体感
+                    const t = Math.random() * Math.PI * 2, scale = 35 + Math.random() * 10, denominator = 1 + Math.sin(t) * Math.sin(t);
+                    x = scale * Math.cos(t) / denominator; y = scale * Math.sin(t) * Math.cos(t) / denominator; z = 10 * Math.sin(t * 2) + (Math.random() - 0.5) * 8;
                 } else if (shape === 'flower') {
-                    // 玫瑰花朵
                     const t = Math.random() * Math.PI * 2, p = Math.random(), r = Math.cos(5 * t) * p * 60;
                     x = r * Math.cos(t); y = r * Math.sin(t); z = (Math.random() - 0.5) * 15;
                 } else if (shape === 'christ') {
-                    // 恢复：虔诚十字架
-                    if (Math.random() < 0.65) {
-                        // 垂直竖条
-                        x = (Math.random() - 0.5) * 12; 
-                        y = (Math.random() - 0.5) * 110; 
-                        z = (Math.random() - 0.5) * 12;
-                    } else {
-                        // 水平横条
-                        x = (Math.random() - 0.5) * 85; 
-                        y = 15 + (Math.random() - 0.5) * 12; 
-                        z = (Math.random() - 0.5) * 12;
-                    }
+                    if (Math.random() < 0.65) { x = (Math.random() - 0.5) * 12; y = (Math.random() - 0.5) * 110; z = (Math.random() - 0.5) * 12; } 
+                    else { x = (Math.random() - 0.5) * 85; y = 15 + (Math.random() - 0.5) * 12; z = (Math.random() - 0.5) * 12; }
                 } else if (shape === 'fireworks') {
-                    // 烟花
                     const theta = Math.random() * Math.PI * 2, phi = Math.acos(Math.random() * 2 - 1), r = Math.pow(Math.random(), 1.5) * 80; 
                     x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.sin(phi) * Math.sin(theta); z = r * Math.cos(phi);
                 }
@@ -217,97 +159,98 @@
             vertexShader: `
                 uniform float uTime; uniform float uMorphProgress; uniform float uScale; attribute vec3 aTarget;
                 void main() {
-                    vec3 mixedPos = mix(position, aTarget, uMorphProgress);
-                    mixedPos *= uScale;
-                    mixedPos.y += sin(uTime * 2.0 + mixedPos.x * 0.05) * 2.0;
-                    mixedPos.x += cos(uTime * 1.5 + mixedPos.y * 0.05) * 2.0;
-                    vec4 mvPosition = modelViewMatrix * vec4(mixedPos, 1.0);
-                    gl_PointSize = 3.0 * (150.0 / -mvPosition.z);
-                    gl_Position = projectionMatrix * mvPosition;
+                    vec3 mixedPos = mix(position, aTarget, uMorphProgress); mixedPos *= uScale;
+                    mixedPos.y += sin(uTime * 2.0 + mixedPos.x * 0.05) * 2.0; mixedPos.x += cos(uTime * 1.5 + mixedPos.y * 0.05) * 2.0;
+                    vec4 mvPosition = modelViewMatrix * vec4(mixedPos, 1.0); gl_PointSize = 3.0 * (150.0 / -mvPosition.z); gl_Position = projectionMatrix * mvPosition;
                 }`,
             fragmentShader: `
-                uniform vec3 uColor;
-                void main() {
-                    vec2 xy = gl_PointCoord.xy - vec2(0.5);
-                    if(length(xy) > 0.5) discard;
-                    gl_FragColor = vec4(uColor, (0.5 - length(xy)) * 2.0 * 0.8);
-                }`,
+                uniform vec3 uColor; void main() { vec2 xy = gl_PointCoord.xy - vec2(0.5); if(length(xy) > 0.5) discard; gl_FragColor = vec4(uColor, (0.5 - length(xy)) * 2.0 * 0.8); }`,
             transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
         });
 
-        const particles = new THREE.Points(geometry, material);
-        scene.add(particles);
-
+        const particles = new THREE.Points(geometry, material); scene.add(particles);
         let morphing = false;
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                const shape = e.target.getAttribute('data-shape');
-                if (shape === currentShape) return;
-                currentShape = shape;
-                geometry.attributes.aTarget.array.set(generatePositions(shape));
-                geometry.attributes.aTarget.needsUpdate = true;
-                material.uniforms.uMorphProgress.value = 0.0;
-                morphing = true;
+                document.querySelectorAll('.btn').forEach(b => b.classList.remove('active')); e.target.classList.add('active');
+                const shape = e.target.getAttribute('data-shape'); if (shape === currentShape) return;
+                currentShape = shape; geometry.attributes.aTarget.array.set(generatePositions(shape)); geometry.attributes.aTarget.needsUpdate = true;
+                material.uniforms.uMorphProgress.value = 0.0; morphing = true;
             });
         });
+        document.getElementById('color-picker').addEventListener('input', (e) => { material.uniforms.uColor.value.set(e.target.value); });
 
-        document.getElementById('color-picker').addEventListener('input', (e) => {
-            material.uniforms.uColor.value.set(e.target.value);
-        });
-
-        // --- AI 手势识别 ---
+        // --- 核心修复区：高强度的 AI 启动与识别流程 ---
         const videoElement = document.getElementById('video');
         const statusEl = document.getElementById('status');
 
-        const hands = new Hands({locateFile: (file) => `https://unpkg.com/@mediapipe/hands/${file}`});
+        // 使用专门为国内优化的 fastly.jsdelivr 节点
+        const hands = new Hands({locateFile: (file) => `https://fastly.jsdelivr.net/npm/@mediapipe/hands/${file}`});
         hands.setOptions({ maxNumHands: 2, modelComplexity: 0, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
-
-        function getDistance(p1, p2) { return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)); }
 
         hands.onResults((results) => {
             if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                if (!isHandDetected) { isHandDetected = true; uiPanel.classList.remove('show'); }
                 const landmarks = results.multiHandLandmarks;
-                
-                if (!isHandDetected) {
-                    isHandDetected = true;
-                    uiPanel.classList.remove('show');
-                }
-
-                if (landmarks.length === 2) {
-                    targetScale = Math.min(Math.max(getDistance(landmarks[0][0], landmarks[1][0]) * 3.5, 0.3), 4.0);
-                } else if (landmarks.length === 1) {
-                    targetScale = Math.min(Math.max(getDistance(landmarks[0][4], landmarks[0][8]) * 5.0, 0.4), 2.5);
-                }
-            } else { 
-                targetScale = 1.0; 
-                isHandDetected = false;
-            }
+                const getDist = (p1, p2) => Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+                if (landmarks.length === 2) targetScale = Math.min(Math.max(getDist(landmarks[0][0], landmarks[1][0]) * 3.5, 0.3), 4.0);
+                else targetScale = Math.min(Math.max(getDist(landmarks[0][4], landmarks[0][8]) * 5.0, 0.4), 2.5);
+            } else { targetScale = 1.0; isHandDetected = false; }
         });
 
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } })
-            .then((stream) => {
-                videoElement.srcObject = stream; 
+        async function startAI() {
+            statusEl.innerText = "步骤 1/3: 正在请求相机权限...";
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } });
+                videoElement.srcObject = stream;
                 
-                videoElement.onloadedmetadata = () => {
-                    videoElement.play();
-                    statusEl.innerText = "正在加载 AI 模型...";
+                videoElement.onloadedmetadata = async () => {
+                    statusEl.innerText = "步骤 2/3: 下载AI核心算法 (预计10-20秒)...";
                     
-                    async function processVideoFrame() {
-                        if (!videoElement.paused && !videoElement.ended) {
-                            try {
-                                await hands.send({image: videoElement});
-                                statusEl.style.opacity = '0'; 
-                            } catch (e) {
-                                console.warn("等待帧就绪...");
-                            }
-                        }
-                        requestAnimationFrame(processVideoFrame);
+                    // 强制捕捉因苹果省电机制导致的播放失败
+                    try {
+                        await videoElement.play();
+                    } catch(err) {
+                        statusEl.innerText = "⚠️ 浏览器限制：请点击屏幕任意位置继续！";
+                        // 如果失败，强制要求用户点击屏幕才能继续
+                        document.body.addEventListener('touchstart', async () => { 
+                            await videoElement.play();
+                            statusEl.innerText = "步骤 2/3: 下载AI核心算法中...";
+                        }, {once: true});
                     }
-                    processVideoFrame();
+
+                    // 强制在此处等待 AI 下载完成，而不是放进循环里
+                    try {
+                        await hands.initialize();
+                        statusEl.innerText = "步骤 3/3: 启动成功！请伸出手控制";
+                        
+                        // 延迟 1.5 秒后彻底隐藏提示框
+                        setTimeout(() => { statusEl.style.opacity = '0'; }, 1500);
+
+                        async function processVideoFrame() {
+                            if (!videoElement.paused && !videoElement.ended) {
+                                await hands.send({image: videoElement});
+                            }
+                            requestAnimationFrame(processVideoFrame);
+                        }
+                        processVideoFrame();
+                    } catch(e) {
+                        statusEl.innerText = "❌ 下载失败：请检查网络或切换WiFi后刷新";
+                    }
                 };
-            }).catch(() => { statusEl.innerText = "需允许相机权限"; });
+            } catch (err) {
+                statusEl.innerText = "❌ 权限被拒：请在手机设置中允许浏览器使用相机";
+            }
+        }
+        
+        // 启动整个流程
+        startAI();
+
+        // 当用户点击屏幕任意处，如果有休眠则强制唤醒视频
+        document.body.addEventListener('touchstart', (e) => { 
+            if(e.target !== menuBtn && !uiPanel.contains(e.target)) uiPanel.classList.remove('show'); 
+            if(videoElement.paused) videoElement.play(); 
+        });
 
         // --- 渲染循环 ---
         const clock = new THREE.Clock();
@@ -326,16 +269,13 @@
                 }
             }
             material.uniforms.uTime.value = clock.getElapsedTime();
-            particles.rotation.y = clock.getElapsedTime() * 0.1;
-            particles.rotation.x = Math.sin(clock.getElapsedTime() * 0.2) * 0.1;
+            particles.rotation.y = clock.getElapsedTime() * 0.1; particles.rotation.x = Math.sin(clock.getElapsedTime() * 0.2) * 0.1;
             renderer.render(scene, camera);
         }
         animate();
 
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
