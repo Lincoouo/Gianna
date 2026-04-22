@@ -274,10 +274,41 @@
 
 
             } else if (shape === 'heart') {
-                const t = Math.random() * Math.PI * 2, r = Math.random() * 2 + 0.5;
-                x = 16 * Math.pow(Math.sin(t), 3) * (r*0.6) * 3;
-                y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * (r*0.6) * 3;
-                z = (Math.random() - 0.5) * 10;
+                // 【全新重构：内外双层嵌套 + 浪漫星尘 的 3D 发光心形】
+                const randH = Math.random();
+                const t = Math.random() * Math.PI * 2;
+                // 基础心形数学方程
+                const hx = 16 * Math.pow(Math.sin(t), 3);
+                const hy = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+
+
+                if (randH < 0.35) {
+                    // 1. 外层：致密清晰的心形轮廓
+                    const scale = 3.0;
+                    x = hx * scale + (Math.random() - 0.5) * 2.5;
+                    y = hy * scale + (Math.random() - 0.5) * 2.5;
+                    z = (Math.random() - 0.5) * 6;
+                } else if (randH < 0.6) {
+                    // 2. 内层：包裹在里面的小爱心（增加层次感）
+                    const scale = 1.6;
+                    x = hx * scale + (Math.random() - 0.5) * 2;
+                    y = hy * scale + (Math.random() - 0.5) * 2;
+                    z = (Math.random() - 0.5) * 4;
+                } else if (randH < 0.8) {
+                    // 3. 核心：由内向外渐变的三维体积填充
+                    const scale = 3.0 * Math.pow(Math.random(), 0.6);
+                    x = hx * scale;
+                    y = hy * scale;
+                    z = (Math.random() - 0.5) * 25 * (1 - scale/3.0); 
+                } else {
+                    // 4. 星尘：周围散落的浪漫星光粒子
+                    const scale = 3.2 + Math.random() * 0.8;
+                    x = hx * scale + (Math.random() - 0.5) * 15;
+                    y = hy * scale + (Math.random() - 0.5) * 15;
+                    z = (Math.random() - 0.5) * 40;
+                }
+                y += 5; // 微调高度居中
+
             } else if (shape === 'butterfly') {
                 const t = Math.random() * Math.PI * 24; 
                 const s = Math.sin(t / 12);
@@ -288,41 +319,42 @@
                 y = (r * Math.cos(t) * 9) + (Math.random() - 0.5) * scatter;
                 z = (Math.random() - 0.5) * 12;
             } else if (shape === 'flower') {
-                // 完全重构的 3D 逼真自然玫瑰模型
-                const theta = Math.random() * Math.PI * 28;
+                // 【高度修复：精致居中且比例完美的 3D 玫瑰】
+                const theta = Math.random() * Math.PI * 24; // 稍微减少螺旋圈数，使尺寸更克制
                 const radSpread = Math.random(); 
 
 
-                const rBase = theta * 1.1; 
+                const rBase = theta * 1.2; 
                 const petalCut = Math.pow(Math.abs(Math.sin(theta * 1.5)), 0.5); 
-                const r = rBase + radSpread * 12 * petalCut; 
+                const r = rBase + radSpread * 10 * petalCut; 
 
 
                 x = r * Math.cos(theta);
                 z = r * Math.sin(theta);
 
 
-                // 翻转 Y 轴逻辑：形成“中间花蕊微凸、中圈陷入、外圈花瓣向上包裹”的经典花朵曲面
-                const bowl = Math.pow(r, 2) / 45;        // 外圈花瓣呈抛物线向上舒展，形成碗状
-                const centerBud = 22 * Math.exp(-r / 8); // 中心保留小巧高挺的花蕾
-                const curl = radSpread * 6 * petalCut;   // 花瓣边缘的自然微翘卷曲
+                // 优化抛物面曲率，压平高度膨胀
+                const bowl = Math.pow(r, 2) / 55;        
+                const centerBud = 25 * Math.exp(-r / 10); 
+                const curl = radSpread * 8 * petalCut;   
 
 
-                // 核心：全部为正向相加，实现外侧向上包裹
                 y = bowl + centerBud + curl;
 
 
-                // 增加一点有机生物的自然抖动粗糙感
+                // 自然生长的细微厚度抖动
                 x += (Math.random() - 0.5) * 1.0;
                 y += (Math.random() - 0.5) * 1.0;
                 z += (Math.random() - 0.5) * 1.0;
 
 
-                // 调整整体模型尺寸与居中位置
-                x *= 0.8;
-                y *= 0.8;
-                z *= 0.8;
-                y -= 22; // 整体向下平移，回到屏幕中央
+                // 【核心修复】：大幅缩小整体比例，并平移至画面正中心
+                const scaleDown = 0.55;
+                x *= scaleDown;
+                y *= scaleDown;
+                z *= scaleDown;
+                y -= 20; 
+
             } else if (shape === 'christ') {
                 if (Math.random() < 0.65) {
                     x = (Math.random() - 0.5) * 12; 
