@@ -85,7 +85,7 @@
 </head>
 <body>
 
-<div id="status">正在唤醒 AI 引擎...</div>
+<div id="status">Wait...</div>
 <div id="canvas-container"></div>
 <video id="video" playsinline autoplay muted></video>
 
@@ -337,7 +337,7 @@
             
             videoElement.onloadedmetadata = () => {
                 videoElement.play();
-                statusEl.innerText = "WYH DASHADER...";
+                statusEl.innerText = "🎈祝叶甘霖生日快乐～🎈";
                 
                 async function processVideoFrame() {
                     if (!videoElement.paused && !videoElement.ended) {
@@ -352,7 +352,7 @@
                 }
                 processVideoFrame();
             };
-        }).catch(() => { statusEl.innerText = "需允许相机权限"; });
+        }).catch(() => { statusEl.innerText = "请允许相机权限"; });
 
     // --- 渲染循环 ---
     const clock = new THREE.Clock();
