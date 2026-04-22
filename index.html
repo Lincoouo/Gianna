@@ -43,19 +43,17 @@
         /* iOS 极致毛玻璃面板 */
         #ui-panel {
             position: absolute; right: 20px; bottom: 95px; width: 280px;
-            background: rgba(30, 30, 30, 0.4); /* 极高透明度暗色基底 */
-            backdrop-filter: blur(25px) saturate(150%); /* iOS级别强烈模糊与色彩饱和 */
+            background: rgba(30, 30, 30, 0.4); 
+            backdrop-filter: blur(25px) saturate(150%); 
             -webkit-backdrop-filter: blur(25px) saturate(150%);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px;
             padding: 24px; box-sizing: border-box; z-index: 15;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-            /* 动画属性 */
             opacity: 0; transform: translateY(20px) scale(0.95); pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); /* 弹性动画 */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); 
             transform-origin: bottom right;
         }
 
-        /* 面板显示时的状态 */
         #ui-panel.show {
             opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
         }
@@ -67,9 +65,7 @@
             margin-bottom: 12px; display: block; font-weight: 500;
         }
         
-        .btn-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-        }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn {
             background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05);
             color: rgba(255, 255, 255, 0.9); padding: 12px 0; border-radius: 14px; 
@@ -97,7 +93,7 @@
 </head>
 <body>
 
-    <div id="status">唤醒 AI 引擎中...</div>
+    <div id="status">正在唤醒 AI 引擎...</div>
     <div id="canvas-container"></div>
     <video id="video" playsinline autoplay muted></video>
 
@@ -124,9 +120,9 @@
         </div>
     </div>
 
-    <!-- 引入库 -->
+    <!-- 引入库：彻底替换为国内访问更稳定的 unpkg 源 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://unpkg.com/@mediapipe/hands/hands.js"></script>
 
     <script>
         const PARTICLE_COUNT = 8000; 
@@ -140,16 +136,19 @@
         const uiPanel = document.getElementById('ui-panel');
         const canvasContainer = document.getElementById('canvas-container');
 
-        // 点击按钮切换面板
         menuBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // 阻止事件冒泡
+            e.stopPropagation(); 
             uiPanel.classList.toggle('show');
         });
 
-        // 点击空白处隐藏面板 (完美沉浸体验)
-        canvasContainer.addEventListener('touchstart', () => { uiPanel.classList.remove('show'); });
-        canvasContainer.addEventListener('mousedown', () => { uiPanel.classList.remove('show'); });
-        uiPanel.addEventListener('click', (e) => e.stopPropagation());
+        // 点击空白处收起面板，并强制唤醒可能被系统休眠的视频流
+        document.body.addEventListener('touchstart', (e) => { 
+            if(e.target !== menuBtn && !uiPanel.contains(e.target)) {
+                uiPanel.classList.remove('show'); 
+            }
+            const videoEl = document.getElementById('video');
+            if(videoEl.paused) videoEl.play(); 
+        });
 
         // --- Three.js 初始化 ---
         const scene = new THREE.Scene();
@@ -241,11 +240,12 @@
             material.uniforms.uColor.value.set(e.target.value);
         });
 
-        // --- AI 手势识别 ---
+        // --- AI 手势识别 (增强修复版) ---
         const videoElement = document.getElementById('video');
         const statusEl = document.getElementById('status');
 
-        const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+        // 改用国内更稳定的 unpkg 源下载 AI 模型
+        const hands = new Hands({locateFile: (file) => `https://unpkg.com/@mediapipe/hands/${file}`});
         hands.setOptions({ maxNumHands: 2, modelComplexity: 0, minDetectionConfidence: 0.6, minTrackingConfidence: 0.6 });
 
         function getDistance(p1, p2) { return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)); }
@@ -254,7 +254,7 @@
             if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                 const landmarks = results.multiHandLandmarks;
                 
-                // 当手进入画面时，如果是第一次，自动隐藏面板
+                // 当手进入画面，且面板开着时，自动隐藏面板
                 if (!isHandDetected) {
                     isHandDetected = true;
                     uiPanel.classList.remove('show');
@@ -273,16 +273,26 @@
 
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } })
             .then((stream) => {
-                videoElement.srcObject = stream; videoElement.play();
-                statusEl.innerText = "正在激活沉浸模式...";
-                async function processVideoFrame() {
-                    if (!videoElement.paused && !videoElement.ended) {
-                        await hands.send({image: videoElement});
-                        statusEl.style.opacity = '0'; // 识别成功后，提示文字彻底消失
+                videoElement.srcObject = stream; 
+                
+                // 确保视频完全加载了元数据后再开始播放和识别
+                videoElement.onloadedmetadata = () => {
+                    videoElement.play();
+                    statusEl.innerText = "正在加载 AI 模型...";
+                    
+                    async function processVideoFrame() {
+                        if (!videoElement.paused && !videoElement.ended) {
+                            try {
+                                await hands.send({image: videoElement});
+                                statusEl.style.opacity = '0'; // 识别成功后，提示文字彻底消失
+                            } catch (e) {
+                                console.warn("等待帧就绪...");
+                            }
+                        }
+                        requestAnimationFrame(processVideoFrame);
                     }
-                    requestAnimationFrame(processVideoFrame);
-                }
-                videoElement.onloadeddata = processVideoFrame;
+                    processVideoFrame();
+                };
             }).catch(() => { statusEl.innerText = "需允许相机权限"; });
 
         // --- 渲染循环 ---
