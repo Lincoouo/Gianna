@@ -319,41 +319,78 @@
                 y = (r * Math.cos(t) * 9) + (Math.random() - 0.5) * scatter;
                 z = (Math.random() - 0.5) * 12;
             } else if (shape === 'flower') {
-                // 【高度修复：精致居中且比例完美的 3D 玫瑰】
-                const theta = Math.random() * Math.PI * 24; // 稍微减少螺旋圈数，使尺寸更克制
-                const radSpread = Math.random(); 
+                // 【花朵、花茎与叶片的完美融合】
+                const randF = Math.random();
+                
+                if (randF < 0.78) {
+                    // --- 1. 花朵本身 ---
+                    const theta = Math.random() * Math.PI * 24; 
+                    const radSpread = Math.random(); 
 
 
-                const rBase = theta * 1.2; 
-                const petalCut = Math.pow(Math.abs(Math.sin(theta * 1.5)), 0.5); 
-                const r = rBase + radSpread * 10 * petalCut; 
+                    const rBase = theta * 1.2; 
+                    const petalCut = Math.pow(Math.abs(Math.sin(theta * 1.5)), 0.5); 
+                    const r = rBase + radSpread * 10 * petalCut; 
 
 
-                x = r * Math.cos(theta);
-                z = r * Math.sin(theta);
+                    x = r * Math.cos(theta);
+                    z = r * Math.sin(theta);
 
 
-                // 优化抛物面曲率，压平高度膨胀
-                const bowl = Math.pow(r, 2) / 55;        
-                const centerBud = 25 * Math.exp(-r / 10); 
-                const curl = radSpread * 8 * petalCut;   
+                    const bowl = Math.pow(r, 2) / 55;        
+                    const centerBud = 25 * Math.exp(-r / 10); 
+                    const curl = radSpread * 8 * petalCut;   
 
 
-                y = bowl + centerBud + curl;
+                    y = bowl + centerBud + curl;
 
 
-                // 自然生长的细微厚度抖动
-                x += (Math.random() - 0.5) * 1.0;
-                y += (Math.random() - 0.5) * 1.0;
-                z += (Math.random() - 0.5) * 1.0;
+                    x += (Math.random() - 0.5) * 1.0;
+                    y += (Math.random() - 0.5) * 1.0;
+                    z += (Math.random() - 0.5) * 1.0;
+                } else if (randF < 0.90) {
+                    // --- 2. 花茎 ---
+                    const h = Math.random() * 75; // 花茎长度往下延伸
+                    const curve = Math.sin(h * 0.04) * 4; // 花茎自然微曲
+                    const angle = Math.random() * Math.PI * 2;
+                    const rStem = Math.random() * 1.5; // 茎的粗细
+                    
+                    x = curve + rStem * Math.cos(angle);
+                    z = rStem * Math.sin(angle);
+                    y = 25 - h; // 完美衔接在花蕾的底部
+                } else {
+                    // --- 3. 两侧叶片 ---
+                    const isRight = Math.random() > 0.5;
+                    const leafPos = isRight ? 25 : 45; // 叶片生长的高度位置
+                    const stemX = Math.sin(leafPos * 0.04) * 4;
+                    
+                    const l = Math.random(); // 叶片长度比例
+                    const w = Math.random(); // 叶片宽度比例
+                    
+                    const leafLen = 22;
+                    // 叶片轮廓方程：中间宽，两头尖
+                    const leafWidth = 8 * Math.sin(l * Math.PI) * (w - 0.5);
+                    
+                    if (isRight) {
+                        x = stemX + l * leafLen;
+                        y = (25 - leafPos) + l * 12 + (Math.random() - 0.5); // 向右上扬
+                        z = leafWidth + (Math.random() - 0.5);
+                    } else {
+                        x = stemX - l * leafLen;
+                        y = (25 - leafPos) + l * 8 + (Math.random() - 0.5);  // 向左上扬
+                        z = leafWidth + (Math.random() - 0.5);
+                    }
+                }
 
 
-                // 【核心修复】：大幅缩小整体比例，并平移至画面正中心
-                const scaleDown = 0.55;
+                // 【整体缩放与高度居中调节】
+                const scaleDown = 0.5;
                 x *= scaleDown;
                 y *= scaleDown;
                 z *= scaleDown;
-                y -= 20; 
+                
+                // 将玫瑰的重心狠狠往下拉，确保完美居中！
+                y -= 10; 
 
             } else if (shape === 'christ') {
                 if (Math.random() < 0.65) {
