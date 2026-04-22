@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>祝你生日快乐！</title>
+    <title>🎂</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -289,34 +289,40 @@
                 z = (Math.random() - 0.5) * 12;
             } else if (shape === 'flower') {
                 // 完全重构的 3D 逼真自然玫瑰模型
-                const theta = Math.random() * Math.PI * 26; // 大量螺旋圈数使花瓣更密
-                const radSpread = Math.random(); // 花瓣的厚度和宽度分布
-                
-                const rBase = theta * 1.1; // 半径随螺旋向外增大
-                const petalCut = Math.pow(Math.abs(Math.sin(theta * 1.5)), 0.6); // 形成独立交错的花瓣感
-                const r = rBase + radSpread * 14 * petalCut; // 最终平面极坐标半径
-                
+                const theta = Math.random() * Math.PI * 28;
+                const radSpread = Math.random(); 
+
+
+                const rBase = theta * 1.1; 
+                const petalCut = Math.pow(Math.abs(Math.sin(theta * 1.5)), 0.5); 
+                const r = rBase + radSpread * 12 * petalCut; 
+
+
                 x = r * Math.cos(theta);
                 z = r * Math.sin(theta);
-                
-                // 巧妙的高度算法（灵魂），形成玫瑰立体包裹感
-                const budHeight = 30 * Math.exp(-r / 10); // 中心花蕾高挺不下垂
-                const bowlShape = Math.pow(r, 2) / 90;    // 外围成抛物线形向下外翻
-                const curl = radSpread * 10 * petalCut;   // 花瓣边缘自然微微向上翘起卷曲
-                
-                y = budHeight - bowlShape + curl;
-                
-                // 添加细微的自然抖动粗糙感
-                x += (Math.random() - 0.5) * 1.2;
-                y += (Math.random() - 0.5) * 1.2;
-                z += (Math.random() - 0.5) * 1.2;
+
+
+                // 翻转 Y 轴逻辑：形成“中间花蕊微凸、中圈陷入、外圈花瓣向上包裹”的经典花朵曲面
+                const bowl = Math.pow(r, 2) / 45;        // 外圈花瓣呈抛物线向上舒展，形成碗状
+                const centerBud = 22 * Math.exp(-r / 8); // 中心保留小巧高挺的花蕾
+                const curl = radSpread * 6 * petalCut;   // 花瓣边缘的自然微翘卷曲
+
+
+                // 核心：全部为正向相加，实现外侧向上包裹
+                y = bowl + centerBud + curl;
+
+
+                // 增加一点有机生物的自然抖动粗糙感
+                x += (Math.random() - 0.5) * 1.0;
+                y += (Math.random() - 0.5) * 1.0;
+                z += (Math.random() - 0.5) * 1.0;
 
 
                 // 调整整体模型尺寸与居中位置
-                x *= 0.85;
-                y *= 0.85;
-                z *= 0.85;
-                y += 5; 
+                x *= 0.8;
+                y *= 0.8;
+                z *= 0.8;
+                y -= 22; // 整体向下平移，回到屏幕中央
             } else if (shape === 'christ') {
                 if (Math.random() < 0.65) {
                     x = (Math.random() - 0.5) * 12; 
