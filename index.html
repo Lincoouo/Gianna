@@ -157,9 +157,9 @@
         ctx.font = 'bold 20px "Microsoft YaHei", sans-serif'; // 缩小字号适配两行
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        // 精确分配上下高度，让其在80高度中视觉居中
-        ctx.fillText('祝甘霖', 80, 26); 
-        ctx.fillText('生日快乐！', 80, 54); 
+        //【视觉偏移修复】：为抵消全角感叹号“！”右侧自带的字体留白，这里做了精细的X轴补差对齐
+        ctx.fillText('祝甘霖', 76, 26); 
+        ctx.fillText('生日快乐！', 83, 54); 
         
         const data = ctx.getImageData(0, 0, 160, 80).data;
         for (let i = 0; i < data.length; i += 4) {
