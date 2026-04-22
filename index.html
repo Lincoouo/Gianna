@@ -496,7 +496,7 @@
             
             videoElement.onloadedmetadata = () => {
                 videoElement.play();
-                statusEl.innerText = "🎈祝叶甘霖生日快乐～🎈";
+                statusEl.innerText = "";
                 
                 async function processVideoFrame() {
                     if (!videoElement.paused && !videoElement.ended) {
