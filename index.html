@@ -126,6 +126,31 @@
     let targetScale = 1.0;
     let currentScale = 1.0;
     let isHandDetected = false;
+
+    // --- 动态生成文字粒子像素点阵 ---
+    const textPoints =[];
+    function initTextPoints() {
+        const cvs = document.createElement('canvas');
+        cvs.width = 120;
+        cvs.height = 60;
+        const ctx = cvs.getContext('2d');
+        ctx.fillStyle = '#000'; // 黑底
+        ctx.fillRect(0, 0, 120, 60);
+        ctx.fillStyle = '#fff'; // 白字，用于像素提取
+        ctx.font = '900 24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('生日快乐', 60, 30);
+        
+        const data = ctx.getImageData(0, 0, 120, 60).data;
+        for (let i = 0; i < data.length; i += 4) {
+            if (data[i] > 128) { // 提取亮色像素点
+                const idx = i / 4;
+                textPoints.push({ x: (idx % 120) - 60, y: 30 - Math.floor(idx / 120) });
+            }
+        }
+    }
+    initTextPoints();
     
     // --- UI 逻辑控制 ---
     const menuBtn = document.getElementById('menu-btn');
@@ -161,64 +186,89 @@
             let x, y, z;
             
             if (shape === 'cake') {
-                // 精致的 3D 生日蛋糕模型
                 const rand = Math.random();
-                if (rand < 0.4) {
-                    // 底层蛋糕胚 (60%在表面勾勒轮廓，40%在内部填充)
+                if (rand < 0.25) {
+                    // 底层蛋糕胚
                     const isSurface = Math.random() < 0.6;
                     const r = isSurface ? 35 : 35 * Math.sqrt(Math.random());
                     const theta = Math.random() * Math.PI * 2;
                     x = r * Math.cos(theta);
-                    y = -20 + Math.random() * 20; // 底部高度
+                    y = -20 + Math.random() * 20; 
                     z = r * Math.sin(theta);
-                } else if (rand < 0.7) {
+                } else if (rand < 0.45) {
                     // 顶层蛋糕胚
                     const isSurface = Math.random() < 0.6;
                     const r = isSurface ? 22 : 22 * Math.sqrt(Math.random());
                     const theta = Math.random() * Math.PI * 2;
                     x = r * Math.cos(theta);
-                    y = 0 + Math.random() * 15; // 顶部高度
+                    y = 0 + Math.random() * 15;
                     z = r * Math.sin(theta);
-                } else if (rand < 0.85) {
-                    // 奶油波浪花边 (底层和顶层边缘)
+                } else if (rand < 0.55) {
+                    // 奶油波浪花边
                     const isTop = Math.random() > 0.5;
                     const r = isTop ? 22 : 35;
                     const yBase = isTop ? 15 : 0;
                     const theta = Math.random() * Math.PI * 2;
-                    const wave = Math.sin(theta * 12) * 2; // 波浪起伏效果
+                    const wave = Math.sin(theta * 12) * 2; 
                     x = (r + wave) * Math.cos(theta) + (Math.random() - 0.5) * 2;
                     y = yBase + wave + (Math.random() - 0.5) * 2;
                     z = (r + wave) * Math.sin(theta) + (Math.random() - 0.5) * 2;
+                } else if (rand < 0.65) {
+                    // 悬浮镂空贺卡边框
+                    const cw = 54, ch = 32;
+                    let cx, cy;
+                    if (Math.random() < 0.5) {
+                        cx = (Math.random() - 0.5) * cw;
+                        cy = (Math.random() > 0.5 ? 0.5 : -0.5) * ch;
+                    } else {
+                        cx = (Math.random() > 0.5 ? 0.5 : -0.5) * cw;
+                        cy = (Math.random() - 0.5) * ch;
+                    }
+                    const angle = -0.25; // 贺卡倾斜角度
+                    x = cx;
+                    y = 12 + cy * Math.cos(angle);
+                    z = 24 + cy * Math.sin(angle);
+                } else if (rand < 0.92) {
+                    // 贺卡上的发光文字：生日快乐
+                    if (textPoints.length > 0) {
+                        const pt = textPoints[Math.floor(Math.random() * textPoints.length)];
+                        const scale = 0.35;
+                        const angle = -0.25;
+                        const px = pt.x * scale + (Math.random() - 0.5) * 0.4;
+                        const py = pt.y * scale + (Math.random() - 0.5) * 0.4;
+                        x = px;
+                        y = 12 + py * Math.cos(angle);
+                        z = 24 + py * Math.sin(angle) + 1.0; // Z轴加1，确保文字在贺卡前方
+                    } else {
+                        x = 0; y = 0; z = 0;
+                    }
                 } else {
-                    // 顶部的 5 根蜡烛与烛光
+                    // 顶部的 5 根蜡烛与跳动烛光
                     const candleIdx = Math.floor(Math.random() * 5);
-                    const cTheta = candleIdx * (Math.PI * 2 / 5); // 五等分圆
+                    const cTheta = candleIdx * (Math.PI * 2 / 5); 
                     const cx = 14 * Math.cos(cTheta);
                     const cz = 14 * Math.sin(cTheta);
                     
                     if (Math.random() > 0.2) {
-                        // 蜡烛柱体
                         x = cx + (Math.random() - 0.5) * 2;
                         y = 15 + Math.random() * 10;
                         z = cz + (Math.random() - 0.5) * 2;
                     } else {
-                        // 烛光 (顶部向上飘渺的火苗)
                         const flame = Math.random();
                         x = cx + (Math.random() - 0.5) * (1 - flame) * 3;
                         y = 26 + flame * 6;
                         z = cz + (Math.random() - 0.5) * (1 - flame) * 3;
                     }
                 }
-                y -= 5; // 整体下移一点让其在视觉中心
+                y -= 5; 
+
 
             } else if (shape === 'heart') {
-                // 爱心
                 const t = Math.random() * Math.PI * 2, r = Math.random() * 2 + 0.5;
                 x = 16 * Math.pow(Math.sin(t), 3) * (r*0.6) * 3;
                 y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * (r*0.6) * 3;
                 z = (Math.random() - 0.5) * 10;
             } else if (shape === 'butterfly') {
-                // 浪漫蝴蝶
                 const t = Math.random() * Math.PI * 24; 
                 const s = Math.sin(t / 12);
                 const s5 = s * s * s * s * s;
@@ -228,11 +278,17 @@
                 y = (r * Math.cos(t) * 9) + (Math.random() - 0.5) * scatter;
                 z = (Math.random() - 0.5) * 12;
             } else if (shape === 'flower') {
-                // 玫瑰花朵
-                const t = Math.random() * Math.PI * 2, p = Math.random(), r = Math.cos(5 * t) * p * 60;
-                x = r * Math.cos(t); y = r * Math.sin(t); z = (Math.random() - 0.5) * 15;
+                // 全新 3D 玫瑰立体参数方程
+                const u = Math.random() * 1.0; 
+                const v = Math.random() * 24 * Math.PI; // 螺旋角度，多重花瓣
+                const r = 35 * Math.pow(u, 0.6); // 半径扩散，控制花瓣舒展度
+                const wave = Math.sin(v * 2.5) * 4; // 花瓣边缘的波浪起伏
+                
+                x = (r + wave) * Math.cos(v);
+                z = (r + wave) * Math.sin(v);
+                // 巧妙计算 Y 轴高度，形成内部凹陷、外部卷曲舒展的完美玫瑰碗状
+                y = 22 * Math.sin(u * Math.PI) - 5 + (Math.random() - 0.5) * 2; 
             } else if (shape === 'christ') {
-                // 虔诚十字架
                 if (Math.random() < 0.65) {
                     x = (Math.random() - 0.5) * 12; 
                     y = (Math.random() - 0.5) * 110; 
@@ -243,7 +299,6 @@
                     z = (Math.random() - 0.5) * 12;
                 }
             } else if (shape === 'fireworks') {
-                // 烟花
                 const theta = Math.random() * Math.PI * 2, phi = Math.acos(Math.random() * 2 - 1), r = Math.pow(Math.random(), 1.5) * 80; 
                 x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.sin(phi) * Math.sin(theta); z = r * Math.cos(phi);
             }
@@ -251,6 +306,7 @@
         }
         return positions;
     }
+
 
     const geometry = new THREE.BufferGeometry();
     // 默认生成蛋糕模型
