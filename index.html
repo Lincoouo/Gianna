@@ -105,8 +105,6 @@
 <div id="canvas-container"></div>
 <video id="video" playsinline autoplay muted></video>
 
-
-    
 <!-- 音乐播放器 (请替换 src 中的链接为实际的 mp3 地址) -->
 <audio id="bg-music" loop preload="auto">
     <source src="./HB.mp3" type="audio/mpeg">
@@ -114,7 +112,6 @@
 
 <!-- 控制按钮 -->
 <div id="music-btn" class="paused">🎵</div>
-
 
 <!-- 悬浮触发按钮 -->
 <div id="menu-btn">🪄</div>
@@ -213,6 +210,16 @@
         }
     });
 
+    const tryPlayMusic = () => {
+        if (!musicStarted) {
+            bgMusic.play().then(() => {
+                musicBtn.classList.remove('paused');
+                musicStarted = true;
+            }).catch(e => {
+                console.log("需用户手动交互");
+            });
+        }
+    };
 
     // 触摸屏幕或点击任意区域时尝试自动播放音乐
     // const tryPlayMusic = () => {
@@ -225,8 +232,8 @@
     //         });
     //     }
     // };
-    // document.body.addEventListener('touchstart', tryPlayMusic, {once: false});
-    // document.body.addEventListener('click', tryPlayMusic, {once: false});
+    document.body.addEventListener('touchstart', tryPlayMusic, {once: false});
+    document.body.addEventListener('click', tryPlayMusic, {once: false});
     
 
     
