@@ -574,7 +574,17 @@
             
             videoElement.onloadedmetadata = () => {
                 videoElement.play();
-                statusEl.innerText = "";
+                // 【相机就绪时，立即尝试播放背景音乐】
+                if (!musicStarted) {
+                    bgMusic.play().then(() => {
+                        musicBtn.classList.remove('paused');
+                        musicStarted = true;
+                    }).catch(e => {
+                        console.log("请点击屏幕任意处播放🎵～");
+                    });
+                }
+
+                // statusEl.innerText = "";
                 
                 async function processVideoFrame() {
                     if (!videoElement.paused && !videoElement.ended) {
@@ -582,14 +592,14 @@
                             await hands.send({image: videoElement});
                             statusEl.style.opacity = '0'; 
                         } catch (e) {
-                            console.warn("等待帧就绪...");
+                            console.warn("等待帧就绪～");
                         }
                     }
                     requestAnimationFrame(processVideoFrame);
                 }
                 processVideoFrame();
             };
-        }).catch(() => { statusEl.innerText = "请允许相机权限"; });
+        }).catch(() => { statusEl.innerText = "请允许相机权限～"; });
 
     // --- 渲染循环 ---
     const clock = new THREE.Clock();
