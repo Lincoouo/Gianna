@@ -101,7 +101,7 @@
 </head>
 <body>
 
-<div id="status">Wait...</div>
+<div id="status">🎈每天有每天的快乐 今天是生日快乐🎈</div>
 <div id="canvas-container"></div>
 <video id="video" playsinline autoplay muted></video>
 
@@ -382,27 +382,26 @@
             } else if (shape === 'flower') {
                 const randF = Math.random();
                 
-                // 【大幅优化玫瑰花瓣层级：80%粒子用于构筑繁茂的花朵】
-                if (randF < 0.80) {
-                    // 增加螺旋圈数使内部更致密
-                    const theta = Math.random() * Math.PI * 24; 
+                if (randF < 0.78) {
+                    // --- 1. 花朵本身 ---
+                    // 【优化】：大幅增加螺旋圈数（30圈），让花瓣层数极其丰富
+                    const theta = Math.random() * Math.PI * 30; 
                     const radSpread = Math.random(); 
 
 
-                    const rBase = theta * 0.85; 
-                    // 核心修改：利用 theta * 2.5 形成经典的 5 瓣交错叠加，打破只有两瓣的错觉
+                    const rBase = theta * 0.7; 
+                    // 【优化】：将频率调高到2.5，使得每圈长出5片相互交错的花瓣，告别两瓣感！
                     const petalCut = Math.pow(Math.abs(Math.sin(theta * 2.5)), 0.4); 
-                    // 加大向外舒展的幅度，使得花瓣非常宽阔饱满
-                    const r = rBase + radSpread * 14 * petalCut; 
+                    const r = rBase + radSpread * 15 * petalCut; 
 
 
                     x = r * Math.cos(theta);
                     z = r * Math.sin(theta);
 
 
-                    const bowl = Math.pow(r, 2) / 45;        
-                    const centerBud = 25 * Math.exp(-r / 8); 
-                    const curl = radSpread * 6 * petalCut;   
+                    const bowl = Math.pow(r, 2) / 35;        
+                    const centerBud = 28 * Math.exp(-r / 7); 
+                    const curl = radSpread * 8 * petalCut;   
 
 
                     y = bowl + centerBud + curl;
@@ -411,7 +410,7 @@
                     x += (Math.random() - 0.5) * 1.0;
                     y += (Math.random() - 0.5) * 1.0;
                     z += (Math.random() - 0.5) * 1.0;
-                } else if (randF < 0.90) {
+                } else if (randF < 0.88) {
                     // --- 2. 花茎 ---
                     const h = Math.random() * 120; 
                     const curve = Math.sin(h * 0.03) * 6; 
@@ -430,8 +429,8 @@
                     const l = Math.random(); 
                     const w = Math.random(); 
                     
-                    const leafLen = 65; 
-                    const leafWidth = 22 * Math.sin(l * Math.PI) * (w - 0.5); 
+                    const leafLen = 75; 
+                    const leafWidth = 24 * Math.sin(l * Math.PI) * (w - 0.5); 
                     
                     if (isRight) {
                         x = stemX + l * leafLen;
@@ -445,10 +444,12 @@
                 }
 
 
-                const scaleDown = 0.5;
+                // 为了防止多层花瓣撑大出屏幕，稍微再压小一点整体缩放
+                const scaleDown = 0.45;
                 x *= scaleDown;
                 y *= scaleDown;
                 z *= scaleDown;
+
 
                 
                 // 将整支玫瑰向下调整25个单位，绝对稳稳居中
