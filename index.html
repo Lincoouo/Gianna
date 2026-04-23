@@ -303,6 +303,245 @@
         if(videoEl.paused) videoEl.play(); 
     });
 
+
+    
+    // // --- Three.js 初始化 ---
+    // const scene = new THREE.Scene();
+    // scene.fog = new THREE.FogExp2(0x000000, 0.002);
+    // const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // camera.position.z = 150;
+    // const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // renderer.setSize(window.innerWidth, window.innerHeight);
+    // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    // canvasContainer.appendChild(renderer.domElement);
+
+    // function generatePositions(shape) {
+    //     const positions = new Float32Array(PARTICLE_COUNT * 3);
+    //     for (let i = 0; i < PARTICLE_COUNT; i++) {
+    //         let x, y, z;
+            
+    //         if (shape === 'cake') {
+    //             const rand = Math.random();
+    //             if (rand < 0.25) {
+    //                 // 底层蛋糕胚
+    //                 const isSurface = Math.random() < 0.6;
+    //                 const r = isSurface ? 35 : 35 * Math.sqrt(Math.random());
+    //                 const theta = Math.random() * Math.PI * 2;
+    //                 x = r * Math.cos(theta);
+    //                 y = -20 + Math.random() * 20; 
+    //                 z = r * Math.sin(theta);
+    //             } else if (rand < 0.45) {
+    //                 // 顶层蛋糕胚
+    //                 const isSurface = Math.random() < 0.6;
+    //                 const r = isSurface ? 22 : 22 * Math.sqrt(Math.random());
+    //                 const theta = Math.random() * Math.PI * 2;
+    //                 x = r * Math.cos(theta);
+    //                 y = 0 + Math.random() * 15;
+    //                 z = r * Math.sin(theta);
+    //             } else if (rand < 0.55) {
+    //                 // 奶油波浪花边
+    //                 const isTop = Math.random() > 0.5;
+    //                 const r = isTop ? 22 : 35;
+    //                 const yBase = isTop ? 15 : 0;
+    //                 const theta = Math.random() * Math.PI * 2;
+    //                 const wave = Math.sin(theta * 12) * 2; 
+    //                 x = (r + wave) * Math.cos(theta) + (Math.random() - 0.5) * 2;
+    //                 y = yBase + wave + (Math.random() - 0.5) * 2;
+    //                 z = (r + wave) * Math.sin(theta) + (Math.random() - 0.5) * 2;
+    //             } else if (rand < 0.90) {
+    //                 // 映射高精度精致贺卡
+    //                 if (cardPoints.length > 0) {
+    //                     const pt = cardPoints[Math.floor(Math.random() * cardPoints.length)];
+    //                     const scale = 0.22; 
+    //                     const angle = -0.15; 
+                        
+    //                     const px = pt.x * scale + (Math.random() - 0.5) * 0.25; 
+    //                     const py = pt.y * scale + (Math.random() - 0.5) * 0.25;
+                        
+    //                     x = px;
+    //                     y = 10 + py * Math.cos(angle);
+    //                     z = 25 + py * Math.sin(angle); 
+    //                 } else {
+    //                     x = 0; y = 0; z = 0;
+    //                 }
+    //             } else {
+    //                 // 顶部的蜡烛与跳动烛光
+    //                 const candleIdx = Math.floor(Math.random() * 5);
+    //                 const cTheta = candleIdx * (Math.PI * 2 / 5); 
+    //                 const cx = 14 * Math.cos(cTheta);
+    //                 const cz = 14 * Math.sin(cTheta);
+                    
+    //                 if (Math.random() > 0.2) {
+    //                     x = cx + (Math.random() - 0.5) * 2;
+    //                     y = 15 + Math.random() * 10;
+    //                     z = cz + (Math.random() - 0.5) * 2;
+    //                 } else {
+    //                     const flame = Math.random();
+    //                     x = cx + (Math.random() - 0.5) * (1 - flame) * 3;
+    //                     y = 26 + flame * 6;
+    //                     z = cz + (Math.random() - 0.5) * (1 - flame) * 3;
+    //                 }
+    //             }
+    //             y -= 5; 
+
+
+    //         } else if (shape === 'heart') {
+    //             // 【全新重构：内外双层嵌套 + 浪漫星尘 的 3D 发光心形】
+    //             const randH = Math.random();
+    //             const t = Math.random() * Math.PI * 2;
+    //             // 基础心形数学方程
+    //             const hx = 16 * Math.pow(Math.sin(t), 3);
+    //             const hy = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+
+
+    //             if (randH < 0.35) {
+    //                 // 1. 外层：致密清晰的心形轮廓
+    //                 const scale = 3.0;
+    //                 x = hx * scale + (Math.random() - 0.5) * 2.5;
+    //                 y = hy * scale + (Math.random() - 0.5) * 2.5;
+    //                 z = (Math.random() - 0.5) * 6;
+    //             } else if (randH < 0.6) {
+    //                 // 2. 内层：包裹在里面的小爱心（增加层次感）
+    //                 const scale = 1.6;
+    //                 x = hx * scale + (Math.random() - 0.5) * 2;
+    //                 y = hy * scale + (Math.random() - 0.5) * 2;
+    //                 z = (Math.random() - 0.5) * 4;
+    //             } else if (randH < 0.8) {
+    //                 // 3. 核心：由内向外渐变的三维体积填充
+    //                 const scale = 3.0 * Math.pow(Math.random(), 0.6);
+    //                 x = hx * scale;
+    //                 y = hy * scale;
+    //                 z = (Math.random() - 0.5) * 25 * (1 - scale/3.0); 
+    //             } else {
+    //                 // 4. 星尘：周围散落的浪漫星光粒子
+    //                 const scale = 3.2 + Math.random() * 0.8;
+    //                 x = hx * scale + (Math.random() - 0.5) * 15;
+    //                 y = hy * scale + (Math.random() - 0.5) * 15;
+    //                 z = (Math.random() - 0.5) * 40;
+    //             }
+    //             y += 5; // 微调高度居中
+
+    //         } else if (shape === 'butterfly') {
+    //             const t = Math.random() * Math.PI * 24; 
+    //             const s = Math.sin(t / 12);
+    //             const s5 = s * s * s * s * s;
+    //             const r = Math.exp(Math.cos(t)) - 2 * Math.cos(4 * t) + s5;
+    //             const scatter = Math.random() * 2;
+    //             x = (r * Math.sin(t) * 9) + (Math.random() - 0.5) * scatter;
+    //             y = (r * Math.cos(t) * 9) + (Math.random() - 0.5) * scatter;
+    //             z = (Math.random() - 0.5) * 12;
+    //         } else if (shape === 'flower') {
+    //             const randF = Math.random();
+                
+    //             if (randF < 0.76) {
+    //                 // --- 1. 花朵本身 ---
+    //                 const theta = Math.random() * Math.PI * 22; // 增加螺旋圈数更丰满
+    //                 const radSpread = Math.random(); 
+
+
+    //                 const rBase = theta * 0.9; 
+    //                 // 【将 1.6 修改为了 2.5，正好切分出 5 个花瓣】
+    //                 const petalCut = Math.pow(Math.abs(Math.sin(theta * 2.5)), 0.5); 
+    //                 const r = rBase + radSpread * 14 * petalCut; // 扩大了花瓣扩散深度
+
+
+    //                 x = r * Math.cos(theta);
+    //                 z = r * Math.sin(theta);
+
+
+    //                 const bowl = Math.pow(r, 2) / 40;        
+    //                 const centerBud = 25 * Math.exp(-r / 8); 
+    //                 const curl = radSpread * 6 * petalCut;   
+
+
+    //                 y = bowl + centerBud + curl;
+
+
+    //                 x += (Math.random() - 0.5) * 1.0;
+    //                 y += (Math.random() - 0.5) * 1.0;
+    //                 z += (Math.random() - 0.5) * 1.0;
+    //             } else if (randF < 0.88) {
+    //                 // --- 2. 花茎 ---
+    //                 const h = Math.random() * 120; 
+    //                 const curve = Math.sin(h * 0.03) * 6; 
+    //                 const angle = Math.random() * Math.PI * 2;
+    //                 const rStem = Math.random() * 2.0; 
+                    
+    //                 x = curve + rStem * Math.cos(angle);
+    //                 z = rStem * Math.sin(angle);
+    //                 y = 20 - h; 
+    //             } else {
+    //                 // --- 3. 两侧叶片 ---
+    //                 const isRight = Math.random() > 0.5;
+    //                 const leafPos = isRight ? 35 : 65; 
+    //                 const stemX = Math.sin(leafPos * 0.03) * 6;
+                    
+    //                 const l = Math.random(); 
+    //                 const w = Math.random(); 
+                    
+    //                 const leafLen = 65; 
+    //                 const leafWidth = 22 * Math.sin(l * Math.PI) * (w - 0.5); 
+                    
+    //                 if (isRight) {
+    //                     x = stemX + l * leafLen;
+    //                     y = (20 - leafPos) + l * 30 + (Math.random() - 0.5); 
+    //                     z = leafWidth + (Math.random() - 0.5);
+    //                 } else {
+    //                     x = stemX - l * leafLen;
+    //                     y = (20 - leafPos) + l * 25 + (Math.random() - 0.5); 
+    //                     z = leafWidth + (Math.random() - 0.5);
+    //                 }
+    //             }
+
+
+    //             const scaleDown = 0.5;
+    //             x *= scaleDown;
+    //             y *= scaleDown;
+    //             z *= scaleDown;
+                
+    //             y -= 16; 
+ 
+
+    //         } else if (shape === 'christ') {
+    //             // 【重构十字架：具有立体感、圣光环和山丘基石】
+    //             const randC = Math.random();
+    //             if (randC < 0.50) {
+    //                 // 1. 垂直主干 (稍微有一点厚度)
+    //                 x = (Math.random() - 0.5) * 10; 
+    //                 y = (Math.random() - 0.5) * 120; 
+    //                 z = (Math.random() - 0.5) * 10;
+    //             } else if (randC < 0.65) {
+    //                 // 2. 水平横梁
+    //                 x = (Math.random() - 0.5) * 80; 
+    //                 y = 20 + (Math.random() - 0.5) * 10; 
+    //                 z = (Math.random() - 0.5) * 10;
+    //             } else if (randC < 0.85) {
+    //                 // 3. 圣光圆环 (Halo)
+    //                 const t = Math.random() * Math.PI * 2;
+    //                 const rRing = 32 + Math.random() * 4; 
+    //                 x = rRing * Math.cos(t);
+    //                 y = 20 + rRing * Math.sin(t);
+    //                 z = -8 + (Math.random() - 0.5) * 4; // 圆环稍微靠后一点
+    //             } else {
+    //                 // 4. 底部的山丘/基石
+    //                 const t = Math.random() * Math.PI * 2;
+    //                 const rBase = Math.random() * 30;
+    //                 x = rBase * Math.cos(t);
+    //                 y = -60 - (30 - rBase) * 0.5 + (Math.random() - 0.5) * 2; // 缓坡向下
+    //                 z = rBase * Math.sin(t);
+    //             }
+    //         } else if (shape === 'fireworks') {
+    //             const theta = Math.random() * Math.PI * 2, phi = Math.acos(Math.random() * 2 - 1), r = Math.pow(Math.random(), 1.5) * 80; 
+    //             x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.sin(phi) * Math.sin(theta); z = r * Math.cos(phi);
+    //         }
+    //         positions[i * 3] = x; positions[i * 3 + 1] = y; positions[i * 3 + 2] = z;
+    //     }
+    //     return positions;
+    // }
+
+
+
+
     // --- Three.js 初始化 ---
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x000000, 0.002);
@@ -313,142 +552,115 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     canvasContainer.appendChild(renderer.domElement);
 
-    function generatePositions(shape) {
+
+    // 【核心重构】：同时生成坐标位置、专属颜色，以及是否使用全局色标志
+    function generateData(shape) {
         const positions = new Float32Array(PARTICLE_COUNT * 3);
+        const colors = new Float32Array(PARTICLE_COUNT * 3);
+        const useGlobal = new Float32Array(PARTICLE_COUNT);
+
+
         for (let i = 0; i < PARTICLE_COUNT; i++) {
-            let x, y, z;
+            let x = 0, y = 0, z = 0;
+            // 默认设置：颜色为白色占位，默认使用全局颜色 (use = 1)
+            let r = 1.0, g = 1.0, b = 1.0, use = 1.0; 
             
             if (shape === 'cake') {
                 const rand = Math.random();
                 if (rand < 0.25) {
-                    // 底层蛋糕胚
                     const isSurface = Math.random() < 0.6;
-                    const r = isSurface ? 35 : 35 * Math.sqrt(Math.random());
+                    const rad = isSurface ? 35 : 35 * Math.sqrt(Math.random());
                     const theta = Math.random() * Math.PI * 2;
-                    x = r * Math.cos(theta);
-                    y = -20 + Math.random() * 20; 
-                    z = r * Math.sin(theta);
+                    x = rad * Math.cos(theta); y = -20 + Math.random() * 20; z = rad * Math.sin(theta);
                 } else if (rand < 0.45) {
-                    // 顶层蛋糕胚
                     const isSurface = Math.random() < 0.6;
-                    const r = isSurface ? 22 : 22 * Math.sqrt(Math.random());
+                    const rad = isSurface ? 22 : 22 * Math.sqrt(Math.random());
                     const theta = Math.random() * Math.PI * 2;
-                    x = r * Math.cos(theta);
-                    y = 0 + Math.random() * 15;
-                    z = r * Math.sin(theta);
+                    x = rad * Math.cos(theta); y = 0 + Math.random() * 15; z = rad * Math.sin(theta);
                 } else if (rand < 0.55) {
-                    // 奶油波浪花边
                     const isTop = Math.random() > 0.5;
-                    const r = isTop ? 22 : 35;
+                    const rad = isTop ? 22 : 35;
                     const yBase = isTop ? 15 : 0;
                     const theta = Math.random() * Math.PI * 2;
                     const wave = Math.sin(theta * 12) * 2; 
-                    x = (r + wave) * Math.cos(theta) + (Math.random() - 0.5) * 2;
+                    x = (rad + wave) * Math.cos(theta) + (Math.random() - 0.5) * 2;
                     y = yBase + wave + (Math.random() - 0.5) * 2;
-                    z = (r + wave) * Math.sin(theta) + (Math.random() - 0.5) * 2;
+                    z = (rad + wave) * Math.sin(theta) + (Math.random() - 0.5) * 2;
                 } else if (rand < 0.90) {
-                    // 映射高精度精致贺卡
-                    if (cardPoints.length > 0) {
+                    if (cardPoints && cardPoints.length > 0) {
                         const pt = cardPoints[Math.floor(Math.random() * cardPoints.length)];
-                        const scale = 0.22; 
-                        const angle = -0.15; 
-                        
+                        const scale = 0.22; const angle = -0.15; 
                         const px = pt.x * scale + (Math.random() - 0.5) * 0.25; 
                         const py = pt.y * scale + (Math.random() - 0.5) * 0.25;
-                        
-                        x = px;
-                        y = 10 + py * Math.cos(angle);
-                        z = 25 + py * Math.sin(angle); 
-                    } else {
-                        x = 0; y = 0; z = 0;
+                        x = px; y = 10 + py * Math.cos(angle); z = 25 + py * Math.sin(angle); 
                     }
                 } else {
-                    // 顶部的蜡烛与跳动烛光
                     const candleIdx = Math.floor(Math.random() * 5);
                     const cTheta = candleIdx * (Math.PI * 2 / 5); 
-                    const cx = 14 * Math.cos(cTheta);
-                    const cz = 14 * Math.sin(cTheta);
-                    
+                    const cx = 14 * Math.cos(cTheta); const cz = 14 * Math.sin(cTheta);
                     if (Math.random() > 0.2) {
-                        x = cx + (Math.random() - 0.5) * 2;
-                        y = 15 + Math.random() * 10;
-                        z = cz + (Math.random() - 0.5) * 2;
+                        x = cx + (Math.random() - 0.5) * 2; y = 15 + Math.random() * 10; z = cz + (Math.random() - 0.5) * 2;
                     } else {
                         const flame = Math.random();
-                        x = cx + (Math.random() - 0.5) * (1 - flame) * 3;
-                        y = 26 + flame * 6;
-                        z = cz + (Math.random() - 0.5) * (1 - flame) * 3;
+                        x = cx + (Math.random() - 0.5) * (1 - flame) * 3; y = 26 + flame * 6; z = cz + (Math.random() - 0.5) * (1 - flame) * 3;
                     }
                 }
                 y -= 5; 
 
 
             } else if (shape === 'heart') {
-                // 【全新重构：内外双层嵌套 + 浪漫星尘 的 3D 发光心形】
                 const randH = Math.random();
                 const t = Math.random() * Math.PI * 2;
-                // 基础心形数学方程
                 const hx = 16 * Math.pow(Math.sin(t), 3);
                 const hy = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
 
 
                 if (randH < 0.35) {
-                    // 1. 外层：致密清晰的心形轮廓
                     const scale = 3.0;
-                    x = hx * scale + (Math.random() - 0.5) * 2.5;
-                    y = hy * scale + (Math.random() - 0.5) * 2.5;
-                    z = (Math.random() - 0.5) * 6;
+                    x = hx * scale + (Math.random() - 0.5) * 2.5; y = hy * scale + (Math.random() - 0.5) * 2.5; z = (Math.random() - 0.5) * 6;
                 } else if (randH < 0.6) {
-                    // 2. 内层：包裹在里面的小爱心（增加层次感）
                     const scale = 1.6;
-                    x = hx * scale + (Math.random() - 0.5) * 2;
-                    y = hy * scale + (Math.random() - 0.5) * 2;
-                    z = (Math.random() - 0.5) * 4;
+                    x = hx * scale + (Math.random() - 0.5) * 2; y = hy * scale + (Math.random() - 0.5) * 2; z = (Math.random() - 0.5) * 4;
                 } else if (randH < 0.8) {
-                    // 3. 核心：由内向外渐变的三维体积填充
                     const scale = 3.0 * Math.pow(Math.random(), 0.6);
-                    x = hx * scale;
-                    y = hy * scale;
-                    z = (Math.random() - 0.5) * 25 * (1 - scale/3.0); 
+                    x = hx * scale; y = hy * scale; z = (Math.random() - 0.5) * 25 * (1 - scale/3.0); 
                 } else {
-                    // 4. 星尘：周围散落的浪漫星光粒子
                     const scale = 3.2 + Math.random() * 0.8;
-                    x = hx * scale + (Math.random() - 0.5) * 15;
-                    y = hy * scale + (Math.random() - 0.5) * 15;
-                    z = (Math.random() - 0.5) * 40;
+                    x = hx * scale + (Math.random() - 0.5) * 15; y = hy * scale + (Math.random() - 0.5) * 15; z = (Math.random() - 0.5) * 40;
                 }
-                y += 5; // 微调高度居中
-
+                y += 5; 
+                
             } else if (shape === 'butterfly') {
                 const t = Math.random() * Math.PI * 24; 
                 const s = Math.sin(t / 12);
                 const s5 = s * s * s * s * s;
-                const r = Math.exp(Math.cos(t)) - 2 * Math.cos(4 * t) + s5;
+                const rad = Math.exp(Math.cos(t)) - 2 * Math.cos(4 * t) + s5;
                 const scatter = Math.random() * 2;
-                x = (r * Math.sin(t) * 9) + (Math.random() - 0.5) * scatter;
-                y = (r * Math.cos(t) * 9) + (Math.random() - 0.5) * scatter;
+                x = (rad * Math.sin(t) * 9) + (Math.random() - 0.5) * scatter;
+                y = (rad * Math.cos(t) * 9) + (Math.random() - 0.5) * scatter;
                 z = (Math.random() - 0.5) * 12;
+                
             } else if (shape === 'flower') {
                 const randF = Math.random();
                 
-                if (randF < 0.76) {
+                // 压缩花朵比例，分给茎叶更多粒子
+                if (randF < 0.60) {
                     // --- 1. 花朵本身 ---
-                    const theta = Math.random() * Math.PI * 22; // 增加螺旋圈数更丰满
+                    const theta = Math.random() * Math.PI * 18; 
                     const radSpread = Math.random(); 
 
 
                     const rBase = theta * 0.9; 
-                    // 【将 1.6 修改为了 2.5，正好切分出 5 个花瓣】
                     const petalCut = Math.pow(Math.abs(Math.sin(theta * 2.5)), 0.5); 
-                    const r = rBase + radSpread * 14 * petalCut; // 扩大了花瓣扩散深度
+                    const rad = rBase + radSpread * 15 * petalCut; 
 
 
-                    x = r * Math.cos(theta);
-                    z = r * Math.sin(theta);
+                    x = rad * Math.cos(theta);
+                    z = rad * Math.sin(theta);
 
 
-                    const bowl = Math.pow(r, 2) / 40;        
-                    const centerBud = 25 * Math.exp(-r / 8); 
+                    const bowl = Math.pow(rad, 2) / 40;        
+                    const centerBud = 25 * Math.exp(-rad / 8); 
                     const curl = radSpread * 6 * petalCut;   
 
 
@@ -458,7 +670,7 @@
                     x += (Math.random() - 0.5) * 1.0;
                     y += (Math.random() - 0.5) * 1.0;
                     z += (Math.random() - 0.5) * 1.0;
-                } else if (randF < 0.88) {
+                } else if (randF < 0.70) {
                     // --- 2. 花茎 ---
                     const h = Math.random() * 120; 
                     const curve = Math.sin(h * 0.03) * 6; 
@@ -469,84 +681,124 @@
                     z = rStem * Math.sin(angle);
                     y = 20 - h; 
                 } else {
-                    // --- 3. 两侧叶片 ---
-                    const isRight = Math.random() > 0.5;
-                    const leafPos = isRight ? 35 : 65; 
+                    // --- 3. 繁茂的叶片 (增加到6片叶子错落生长) ---
+                    const leafIndex = Math.floor(Math.random() * 6); 
+                    const isRight = leafIndex % 2 === 0;
+                    const leafPos = 20 + Math.floor(leafIndex / 2) * 22; // 沿花茎的3个高度: 20, 42, 64
                     const stemX = Math.sin(leafPos * 0.03) * 6;
                     
                     const l = Math.random(); 
                     const w = Math.random(); 
                     
-                    const leafLen = 65; 
-                    const leafWidth = 22 * Math.sin(l * Math.PI) * (w - 0.5); 
+                    const leafLen = 65 + Math.random() * 15; 
+                    const leafWidth = 26 * Math.sin(l * Math.PI) * (w - 0.5); 
                     
                     if (isRight) {
-                        x = stemX + l * leafLen;
-                        y = (20 - leafPos) + l * 30 + (Math.random() - 0.5); 
-                        z = leafWidth + (Math.random() - 0.5);
+                        x = stemX + l * leafLen * 0.8;
+                        y = (20 - leafPos) + l * 40 + (Math.random() - 0.5) * 2; 
+                        z = leafWidth + (Math.random() - 0.5) * 2;
                     } else {
-                        x = stemX - l * leafLen;
-                        y = (20 - leafPos) + l * 25 + (Math.random() - 0.5); 
-                        z = leafWidth + (Math.random() - 0.5);
+                        x = stemX - l * leafLen * 0.8;
+                        y = (20 - leafPos) + l * 35 + (Math.random() - 0.5) * 2; 
+                        z = leafWidth + (Math.random() - 0.5) * 2;
                     }
                 }
 
 
                 const scaleDown = 0.5;
-                x *= scaleDown;
-                y *= scaleDown;
-                z *= scaleDown;
-                
-                y -= 16; 
- 
+                x *= scaleDown; y *= scaleDown; z *= scaleDown;
+                y -= 16;  
+
 
             } else if (shape === 'christ') {
-                // 【重构十字架：具有立体感、圣光环和山丘基石】
+                // 【完美复刻：Emoji ✝️ 专属紫色底座+白色十字】
+                use = 0.0; // 强制停用全局颜色，采用专属颜色
                 const randC = Math.random();
-                if (randC < 0.50) {
-                    // 1. 垂直主干 (稍微有一点厚度)
-                    x = (Math.random() - 0.5) * 10; 
-                    y = (Math.random() - 0.5) * 120; 
-                    z = (Math.random() - 0.5) * 10;
-                } else if (randC < 0.65) {
-                    // 2. 水平横梁
-                    x = (Math.random() - 0.5) * 80; 
-                    y = 20 + (Math.random() - 0.5) * 10; 
-                    z = (Math.random() - 0.5) * 10;
-                } else if (randC < 0.85) {
-                    // 3. 圣光圆环 (Halo)
-                    const t = Math.random() * Math.PI * 2;
-                    const rRing = 32 + Math.random() * 4; 
-                    x = rRing * Math.cos(t);
-                    y = 20 + rRing * Math.sin(t);
-                    z = -8 + (Math.random() - 0.5) * 4; // 圆环稍微靠后一点
+                
+                if (randC < 0.80) {
+                    // --- 1. 紫色圆角正方形底座 ---
+                    let px, py;
+                    let isInside = false;
+                    while(!isInside) {
+                        px = (Math.random() - 0.5) * 70; // 70x70 正方形
+                        py = (Math.random() - 0.5) * 70;
+                        let rx = Math.abs(px);
+                        let ry = Math.abs(py);
+                        if (rx > 20 && ry > 20) { // 处理圆角 (半径15)
+                            if (Math.pow(rx - 20, 2) + Math.pow(ry - 20, 2) <= 225) { 
+                                isInside = true;
+                            }
+                        } else {
+                            isInside = true;
+                        }
+                    }
+                    x = px; y = py; z = (Math.random() - 0.5) * 2.5;
+                    // 设置经典的宗教紫 (Purple)
+                    r = 0.55; g = 0.15; b = 0.75; 
+                    if (Math.random() > 0.8) { r += 0.08; g += 0.08; b += 0.08; } // 微粒噪点
                 } else {
-                    // 4. 底部的山丘/基石
-                    const t = Math.random() * Math.PI * 2;
-                    const rBase = Math.random() * 30;
-                    x = rBase * Math.cos(t);
-                    y = -60 - (30 - rBase) * 0.5 + (Math.random() - 0.5) * 2; // 缓坡向下
-                    z = rBase * Math.sin(t);
+                    // --- 2. 内部白色十字架 ---
+                    if (Math.random() < 0.6) {
+                        // 竖向木轴
+                        x = (Math.random() - 0.5) * 10;
+                        y = (Math.random() - 0.5) * 45;
+                        z = 2 + (Math.random() - 0.5) * 3; // 突出底座
+                    } else {
+                        // 横向木轴
+                        x = (Math.random() - 0.5) * 35;
+                        y = 6 + (Math.random() - 0.5) * 10;
+                        z = 2 + (Math.random() - 0.5) * 3;
+                    }
+                    // 设置纯白 (White)
+                    r = 1.0; g = 1.0; b = 1.0; 
                 }
+                y += 5; // 微调居中
+                
             } else if (shape === 'fireworks') {
-                const theta = Math.random() * Math.PI * 2, phi = Math.acos(Math.random() * 2 - 1), r = Math.pow(Math.random(), 1.5) * 80; 
-                x = r * Math.sin(phi) * Math.cos(theta); y = r * Math.sin(phi) * Math.sin(theta); z = r * Math.cos(phi);
+                const theta = Math.random() * Math.PI * 2, phi = Math.acos(Math.random() * 2 - 1), rad = Math.pow(Math.random(), 1.5) * 80; 
+                x = rad * Math.sin(phi) * Math.cos(theta); y = rad * Math.sin(phi) * Math.sin(theta); z = rad * Math.cos(phi);
             }
+            
+            // 保存坐标和颜色数据
             positions[i * 3] = x; positions[i * 3 + 1] = y; positions[i * 3 + 2] = z;
+            colors[i * 3] = r; colors[i * 3 + 1] = g; colors[i * 3 + 2] = b;
+            useGlobal[i] = use;
         }
-        return positions;
+        return { positions, colors, useGlobal };
     }
 
 
+    // --- 绑定自定义着色器和属性 ---
+    // （这部分代码替换了你原本初始化 geometry 和 material 的代码）
+    const initialData = generateData(typeof currentShape !== 'undefined' ? currentShape : 'cake');
     const geometry = new THREE.BufferGeometry();
-    // 默认生成蛋糕模型
-    geometry.setAttribute('position', new THREE.BufferAttribute(generatePositions('cake'), 3));
-    geometry.setAttribute('aTarget', new THREE.BufferAttribute(new Float32Array(generatePositions('cake')), 3));
+    
+    geometry.setAttribute('position', new THREE.BufferAttribute(initialData.positions, 3));
+    geometry.setAttribute('aTarget', new THREE.BufferAttribute(new Float32Array(initialData.positions), 3));
+    
+    geometry.setAttribute('aBaseColor', new THREE.BufferAttribute(initialData.colors, 3));
+    geometry.setAttribute('aTargetColor', new THREE.BufferAttribute(new Float32Array(initialData.colors), 3));
+    
+    geometry.setAttribute('aUseColor', new THREE.BufferAttribute(initialData.useGlobal, 1));
+    geometry.setAttribute('aTargetUseColor', new THREE.BufferAttribute(new Float32Array(initialData.useGlobal), 1));
+
 
     const material = new THREE.ShaderMaterial({
-        uniforms: { uTime: { value: 0 }, uMorphProgress: { value: 0 }, uScale: { value: 1.0 }, uColor: { value: new THREE.Color('#ff3366') } },
+        uniforms: { 
+            uTime: { value: 0 }, 
+            uMorphProgress: { value: 0 }, 
+            uScale: { value: 1.0 }, 
+            uColor: { value: new THREE.Color('#ff3366') } 
+        },
         vertexShader: `
-            uniform float uTime; uniform float uMorphProgress; uniform float uScale; attribute vec3 aTarget;
+            uniform float uTime; uniform float uMorphProgress; uniform float uScale; 
+            attribute vec3 aTarget;
+            attribute vec3 aBaseColor; attribute vec3 aTargetColor;
+            attribute float aUseColor; attribute float aTargetUseColor;
+            
+            varying vec3 vColor; varying float vUseColor;
+
+
             void main() {
                 vec3 mixedPos = mix(position, aTarget, uMorphProgress);
                 mixedPos *= uScale;
@@ -555,19 +807,79 @@
                 vec4 mvPosition = modelViewMatrix * vec4(mixedPos, 1.0);
                 gl_PointSize = 3.0 * (150.0 / -mvPosition.z);
                 gl_Position = projectionMatrix * mvPosition;
+                
+                // 平滑渐变颜色
+                vColor = mix(aBaseColor, aTargetColor, uMorphProgress);
+                vUseColor = mix(aUseColor, aTargetUseColor, uMorphProgress);
             }`,
         fragmentShader: `
             uniform vec3 uColor;
+            varying vec3 vColor; varying float vUseColor;
+
+
             void main() {
                 vec2 xy = gl_PointCoord.xy - vec2(0.5);
                 if(length(xy) > 0.5) discard;
-                gl_FragColor = vec4(uColor, (0.5 - length(xy)) * 2.0 * 0.8);
+                
+                // 根据 vUseColor 的比重，混合局部颜色与全局颜色
+                vec3 finalColor = mix(vColor, uColor, vUseColor);
+                
+                gl_FragColor = vec4(finalColor, (0.5 - length(xy)) * 2.0 * 0.8);
             }`,
         transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
     });
+    // --- 替换结束 ---
+
+
+
+
+    
+    // const geometry = new THREE.BufferGeometry();
+    // // 默认生成蛋糕模型
+    // geometry.setAttribute('position', new THREE.BufferAttribute(generatePositions('cake'), 3));
+    // geometry.setAttribute('aTarget', new THREE.BufferAttribute(new Float32Array(generatePositions('cake')), 3));
+
+    // const material = new THREE.ShaderMaterial({
+    //     uniforms: { uTime: { value: 0 }, uMorphProgress: { value: 0 }, uScale: { value: 1.0 }, uColor: { value: new THREE.Color('#ff3366') } },
+    //     vertexShader: `
+    //         uniform float uTime; uniform float uMorphProgress; uniform float uScale; attribute vec3 aTarget;
+    //         void main() {
+    //             vec3 mixedPos = mix(position, aTarget, uMorphProgress);
+    //             mixedPos *= uScale;
+    //             mixedPos.y += sin(uTime * 2.0 + mixedPos.x * 0.05) * 2.0;
+    //             mixedPos.x += cos(uTime * 1.5 + mixedPos.y * 0.05) * 2.0;
+    //             vec4 mvPosition = modelViewMatrix * vec4(mixedPos, 1.0);
+    //             gl_PointSize = 3.0 * (150.0 / -mvPosition.z);
+    //             gl_Position = projectionMatrix * mvPosition;
+    //         }`,
+    //     fragmentShader: `
+    //         uniform vec3 uColor;
+    //         void main() {
+    //             vec2 xy = gl_PointCoord.xy - vec2(0.5);
+    //             if(length(xy) > 0.5) discard;
+    //             gl_FragColor = vec4(uColor, (0.5 - length(xy)) * 2.0 * 0.8);
+    //         }`,
+    //     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+    // });
 
     const particles = new THREE.Points(geometry, material);
     scene.add(particles);
+
+    // let morphing = false;
+    // document.querySelectorAll('.btn').forEach(btn => {
+    //     btn.addEventListener('click', (e) => {
+    //         document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+    //         e.target.classList.add('active');
+    //         const shape = e.target.getAttribute('data-shape');
+    //         if (shape === currentShape) return;
+    //         currentShape = shape;
+    //         geometry.attributes.aTarget.array.set(generatePositions(shape));
+    //         geometry.attributes.aTarget.needsUpdate = true;
+    //         material.uniforms.uMorphProgress.value = 0.0;
+    //         morphing = true;
+    //     });
+    // });
+
 
     let morphing = false;
     document.querySelectorAll('.btn').forEach(btn => {
@@ -577,8 +889,19 @@
             const shape = e.target.getAttribute('data-shape');
             if (shape === currentShape) return;
             currentShape = shape;
-            geometry.attributes.aTarget.array.set(generatePositions(shape));
+            
+            // 新的代码：不仅更新位置，还更新对应的专属颜色和使用标志
+            const newData = generateData(shape);
+            
+            geometry.attributes.aTarget.array.set(newData.positions);
             geometry.attributes.aTarget.needsUpdate = true;
+            
+            geometry.attributes.aTargetColor.array.set(newData.colors);
+            geometry.attributes.aTargetColor.needsUpdate = true;
+
+            geometry.attributes.aTargetUseColor.array.set(newData.useGlobal);
+            geometry.attributes.aTargetUseColor.needsUpdate = true;
+
             material.uniforms.uMorphProgress.value = 0.0;
             morphing = true;
         });
