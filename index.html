@@ -24,6 +24,30 @@
         }
         @keyframes breathe { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
+
+        
+         /* --- 新增：开屏音乐引导弹窗 --- */
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.65); z-index: 100;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            cursor: pointer;
+        }
+        .start-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px 30px; border-radius: 20px;
+            color: rgba(255, 255, 255, 0.95); font-size: 16px; font-weight: 500;
+            letter-spacing: 2px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: breathe 2s infinite ease-in-out;
+        }
+
+
+        
+        
         /* 右下角菜单按钮 */
         #menu-btn {
             position: absolute; right: 25px; bottom: 35px; z-index: 20;
@@ -101,7 +125,15 @@
 </head>
 <body>
 
-<div id="status">🎈 🎈</div>
+
+<!-- 新增：开屏点击引导遮罩 -->
+<div id="start-overlay">
+    <div class="start-box">请点击屏幕任意位置打开🎵～</div>
+</div>
+
+
+    
+<div id="status"></div>
 <div id="canvas-container"></div>
 <video id="video" playsinline autoplay muted></video>
 
@@ -151,15 +183,57 @@
     let currentScale = 1.0;
     let isHandDetected = false;
 
-    // // ==========================================
-    // // 修改点 1：扩大音乐交互监听的层级与逻辑，增加交互后隐藏提示语的功能
-    // // ==========================================
+    // --- 音乐控制与开屏引导逻辑 ---
+    const bgMusic = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-btn');
+    const startOverlay = document.getElementById('start-overlay');
+    let musicStarted = false;
+
+
+    musicBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (bgMusic.paused) {
+            bgMusic.play();
+            musicBtn.classList.remove('paused');
+            musicStarted = true;
+        } else {
+            bgMusic.pause();
+            musicBtn.classList.add('paused');
+        }
+    });
+
+
+    const tryPlayMusic = () => {
+        // 隐藏引导弹窗
+        if (startOverlay.style.opacity !== '0') {
+            startOverlay.style.opacity = '0';
+            startOverlay.style.visibility = 'hidden';
+        }
+        // 播放音乐
+        if (!musicStarted) {
+            bgMusic.play().then(() => {
+                musicBtn.classList.remove('paused');
+                musicStarted = true;
+            }).catch(e => {
+                console.log("浏览器限制了自动播放，需用户手动点击音乐按钮");
+            });
+        }
+    };
+    
+    // 监听全屏点击以触发音乐和消除弹窗
+    document.body.addEventListener('touchstart', tryPlayMusic, {once: false});
+    document.body.addEventListener('click', tryPlayMusic, {once: false});
+    
+
+
+
+    // // --- 音乐控制逻辑 ---
     // const bgMusic = document.getElementById('bg-music');
     // const musicBtn = document.getElementById('music-btn');
-    // const statusEl = document.getElementById('status');
     // let musicStarted = false;
 
 
+    // // 点击音乐按钮切换播放/暂停
     // musicBtn.addEventListener('click', (e) => {
     //     e.stopPropagation();
     //     if (bgMusic.paused) {
@@ -177,63 +251,25 @@
     //         bgMusic.play().then(() => {
     //             musicBtn.classList.remove('paused');
     //             musicStarted = true;
-    //             // 如果当前文字是引导提示，播放成功后立刻隐去
-    //             if (statusEl.innerText.includes("轻触屏幕")) {
-    //                 statusEl.style.opacity = '0';
-    //             }
     //         }).catch(e => {
-    //             console.log("需用户继续手动交互");
+    //             console.log("需用户手动交互");
     //         });
     //     }
     // };
-    // // 使用 capture: true 强制在捕获阶段截获点击，范围扩大至 document
-    // document.addEventListener('touchstart', tryPlayMusic, {capture: true, once: false});
-    // document.addEventListener('click', tryPlayMusic, {capture: true, once: false});
 
-
-    // --- 音乐控制逻辑 ---
-    const bgMusic = document.getElementById('bg-music');
-    const musicBtn = document.getElementById('music-btn');
-    let musicStarted = false;
-
-
-    // 点击音乐按钮切换播放/暂停
-    musicBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (bgMusic.paused) {
-            bgMusic.play();
-            musicBtn.classList.remove('paused');
-            musicStarted = true;
-        } else {
-            bgMusic.pause();
-            musicBtn.classList.add('paused');
-        }
-    });
-
-    const tryPlayMusic = () => {
-        if (!musicStarted) {
-            bgMusic.play().then(() => {
-                musicBtn.classList.remove('paused');
-                musicStarted = true;
-            }).catch(e => {
-                console.log("需用户手动交互");
-            });
-        }
-    };
-
-    // 触摸屏幕或点击任意区域时尝试自动播放音乐
-    // const tryPlayMusic = () => {
-    //     if (!musicStarted) {
-    //         bgMusic.play().then(() => {
-    //             musicBtn.classList.remove('paused');
-    //             musicStarted = true;
-    //         }).catch(e => {
-    //             console.log("浏览器限制了自动播放，需用户手动点击音乐按钮");
-    //         });
-    //     }
-    // };
-    document.body.addEventListener('touchstart', tryPlayMusic, {once: false});
-    document.body.addEventListener('click', tryPlayMusic, {once: false});
+    // // 触摸屏幕或点击任意区域时尝试自动播放音乐
+    // // const tryPlayMusic = () => {
+    // //     if (!musicStarted) {
+    // //         bgMusic.play().then(() => {
+    // //             musicBtn.classList.remove('paused');
+    // //             musicStarted = true;
+    // //         }).catch(e => {
+    // //             console.log("浏览器限制了自动播放，需用户手动点击音乐按钮");
+    // //         });
+    // //     }
+    // // };
+    // document.body.addEventListener('touchstart', tryPlayMusic, {once: false});
+    // document.body.addEventListener('click', tryPlayMusic, {once: false});
     
 
     
