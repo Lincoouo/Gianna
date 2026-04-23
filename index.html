@@ -214,19 +214,19 @@
     });
 
 
-    触摸屏幕或点击任意区域时尝试自动播放音乐
-    const tryPlayMusic = () => {
-        if (!musicStarted) {
-            bgMusic.play().then(() => {
-                musicBtn.classList.remove('paused');
-                musicStarted = true;
-            }).catch(e => {
-                console.log("浏览器限制了自动播放，需用户手动点击音乐按钮");
-            });
-        }
-    };
-    document.body.addEventListener('touchstart', tryPlayMusic, {once: false});
-    document.body.addEventListener('click', tryPlayMusic, {once: false});
+    // 触摸屏幕或点击任意区域时尝试自动播放音乐
+    // const tryPlayMusic = () => {
+    //     if (!musicStarted) {
+    //         bgMusic.play().then(() => {
+    //             musicBtn.classList.remove('paused');
+    //             musicStarted = true;
+    //         }).catch(e => {
+    //             console.log("浏览器限制了自动播放，需用户手动点击音乐按钮");
+    //         });
+    //     }
+    // };
+    // document.body.addEventListener('touchstart', tryPlayMusic, {once: false});
+    // document.body.addEventListener('click', tryPlayMusic, {once: false});
     
 
     
