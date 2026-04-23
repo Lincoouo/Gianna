@@ -152,13 +152,15 @@
     let currentScale = 1.0;
     let isHandDetected = false;
 
-    // --- 音乐控制逻辑 ---
+    // ==========================================
+    // 修改点 1：扩大音乐交互监听的层级与逻辑，增加交互后隐藏提示语的功能
+    // ==========================================
     const bgMusic = document.getElementById('bg-music');
     const musicBtn = document.getElementById('music-btn');
+    const statusEl = document.getElementById('status');
     let musicStarted = false;
 
 
-    // 点击音乐按钮切换播放/暂停
     musicBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (bgMusic.paused) {
@@ -171,20 +173,58 @@
         }
     });
 
-
-    // 触摸屏幕或点击任意区域时尝试自动播放音乐
     const tryPlayMusic = () => {
         if (!musicStarted) {
             bgMusic.play().then(() => {
                 musicBtn.classList.remove('paused');
                 musicStarted = true;
+                // 如果当前文字是引导提示，播放成功后立刻隐去
+                if (statusEl.innerText.includes("轻触屏幕")) {
+                    statusEl.style.opacity = '0';
+                }
             }).catch(e => {
-                console.log("浏览器限制了自动播放，需用户手动点击音乐按钮");
+                console.log("需用户继续手动交互");
             });
         }
     };
-    document.body.addEventListener('touchstart', tryPlayMusic, {once: false});
-    document.body.addEventListener('click', tryPlayMusic, {once: false});
+    // 使用 capture: true 强制在捕获阶段截获点击，范围扩大至 document
+    document.addEventListener('touchstart', tryPlayMusic, {capture: true, once: false});
+    document.addEventListener('click', tryPlayMusic, {capture: true, once: false});
+
+
+    // // --- 音乐控制逻辑 ---
+    // const bgMusic = document.getElementById('bg-music');
+    // const musicBtn = document.getElementById('music-btn');
+    // let musicStarted = false;
+
+
+    // // 点击音乐按钮切换播放/暂停
+    // musicBtn.addEventListener('click', (e) => {
+    //     e.stopPropagation();
+    //     if (bgMusic.paused) {
+    //         bgMusic.play();
+    //         musicBtn.classList.remove('paused');
+    //         musicStarted = true;
+    //     } else {
+    //         bgMusic.pause();
+    //         musicBtn.classList.add('paused');
+    //     }
+    // });
+
+
+    // 触摸屏幕或点击任意区域时尝试自动播放音乐
+    // const tryPlayMusic = () => {
+    //     if (!musicStarted) {
+    //         bgMusic.play().then(() => {
+    //             musicBtn.classList.remove('paused');
+    //             musicStarted = true;
+    //         }).catch(e => {
+    //             console.log("浏览器限制了自动播放，需用户手动点击音乐按钮");
+    //         });
+    //     }
+    // };
+    // document.body.addEventListener('touchstart', tryPlayMusic, {once: false});
+    // document.body.addEventListener('click', tryPlayMusic, {once: false});
     
 
     
