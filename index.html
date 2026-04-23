@@ -433,24 +433,24 @@
             } else if (shape === 'flower') {
                 const randF = Math.random();
                 
-                if (randF < 0.76) {
+                // 压缩花朵比例，分给茎叶更多粒子
+                if (randF < 0.65) {
                     // --- 1. 花朵本身 ---
-                    const theta = Math.random() * Math.PI * 22; // 增加螺旋圈数更丰满
+                    const theta = Math.random() * Math.PI * 18; 
                     const radSpread = Math.random(); 
 
 
                     const rBase = theta * 0.9; 
-                    // 【将 1.6 修改为了 2.5，正好切分出 5 个花瓣】
                     const petalCut = Math.pow(Math.abs(Math.sin(theta * 2.5)), 0.5); 
-                    const r = rBase + radSpread * 14 * petalCut; // 扩大了花瓣扩散深度
+                    const rad = rBase + radSpread * 15 * petalCut; 
 
 
-                    x = r * Math.cos(theta);
-                    z = r * Math.sin(theta);
+                    x = rad * Math.cos(theta);
+                    z = rad * Math.sin(theta);
 
 
-                    const bowl = Math.pow(r, 2) / 40;        
-                    const centerBud = 25 * Math.exp(-r / 8); 
+                    const bowl = Math.pow(rad, 2) / 40;        
+                    const centerBud = 25 * Math.exp(-rad / 8); 
                     const curl = radSpread * 6 * petalCut;   
 
 
@@ -460,7 +460,7 @@
                     x += (Math.random() - 0.5) * 1.0;
                     y += (Math.random() - 0.5) * 1.0;
                     z += (Math.random() - 0.5) * 1.0;
-                } else if (randF < 0.88) {
+                } else if (randF < 0.75) {
                     // --- 2. 花茎 ---
                     const h = Math.random() * 120; 
                     const curve = Math.sin(h * 0.03) * 6; 
@@ -471,64 +471,113 @@
                     z = rStem * Math.sin(angle);
                     y = 20 - h; 
                 } else {
-                    // --- 3. 两侧叶片 ---
-                    const isRight = Math.random() > 0.5;
-                    const leafPos = isRight ? 35 : 65; 
+                    // --- 3. 繁茂的叶片 (共生成6片叶子错落生长) ---
+                    const leafIndex = Math.floor(Math.random() * 6); 
+                    const isRight = leafIndex % 2 === 0;
+                    const leafPos = 20 + Math.floor(leafIndex / 2) * 22; // 沿花茎的3个高度: 20, 42, 64
                     const stemX = Math.sin(leafPos * 0.03) * 6;
                     
                     const l = Math.random(); 
                     const w = Math.random(); 
                     
-                    const leafLen = 65; 
-                    const leafWidth = 22 * Math.sin(l * Math.PI) * (w - 0.5); 
+                    const leafLen = 65 + Math.random() * 15; // 进一步拉长叶片
+                    const leafWidth = 26 * Math.sin(l * Math.PI) * (w - 0.5); 
                     
                     if (isRight) {
-                        x = stemX + l * leafLen;
-                        y = (20 - leafPos) + l * 30 + (Math.random() - 0.5); 
-                        z = leafWidth + (Math.random() - 0.5);
+                        x = stemX + l * leafLen * 0.8;
+                        y = (20 - leafPos) + l * 40 + (Math.random() - 0.5) * 2; // 上扬弧度加强
+                        z = leafWidth + (Math.random() - 0.5) * 2;
                     } else {
-                        x = stemX - l * leafLen;
-                        y = (20 - leafPos) + l * 25 + (Math.random() - 0.5); 
-                        z = leafWidth + (Math.random() - 0.5);
+                        x = stemX - l * leafLen * 0.8;
+                        y = (20 - leafPos) + l * 35 + (Math.random() - 0.5) * 2; 
+                        z = leafWidth + (Math.random() - 0.5) * 2;
                     }
                 }
 
 
                 const scaleDown = 0.5;
-                x *= scaleDown;
-                y *= scaleDown;
-                z *= scaleDown;
+                x *= scaleDown; y *= scaleDown; z *= scaleDown;
+                y -= 16;
+// const randF = Math.random();
                 
-                y -= 16; 
+//                 if (randF < 0.76) {
+//                     // --- 1. 花朵本身 ---
+//                     const theta = Math.random() * Math.PI * 22; // 增加螺旋圈数更丰满
+//                     const radSpread = Math.random(); 
+
+
+//                     const rBase = theta * 0.9; 
+//                     // 【将 1.6 修改为了 2.5，正好切分出 5 个花瓣】
+//                     const petalCut = Math.pow(Math.abs(Math.sin(theta * 2.5)), 0.5); 
+//                     const r = rBase + radSpread * 14 * petalCut; // 扩大了花瓣扩散深度
+
+
+//                     x = r * Math.cos(theta);
+//                     z = r * Math.sin(theta);
+
+
+//                     const bowl = Math.pow(r, 2) / 40;        
+//                     const centerBud = 25 * Math.exp(-r / 8); 
+//                     const curl = radSpread * 6 * petalCut;   
+
+
+//                     y = bowl + centerBud + curl;
+
+
+//                     x += (Math.random() - 0.5) * 1.0;
+//                     y += (Math.random() - 0.5) * 1.0;
+//                     z += (Math.random() - 0.5) * 1.0;
+//                 } else if (randF < 0.88) {
+//                     // --- 2. 花茎 ---
+//                     const h = Math.random() * 120; 
+//                     const curve = Math.sin(h * 0.03) * 6; 
+//                     const angle = Math.random() * Math.PI * 2;
+//                     const rStem = Math.random() * 2.0; 
+                    
+//                     x = curve + rStem * Math.cos(angle);
+//                     z = rStem * Math.sin(angle);
+//                     y = 20 - h; 
+//                 } else {
+//                     // --- 3. 两侧叶片 ---
+//                     const isRight = Math.random() > 0.5;
+//                     const leafPos = isRight ? 35 : 65; 
+//                     const stemX = Math.sin(leafPos * 0.03) * 6;
+                    
+//                     const l = Math.random(); 
+//                     const w = Math.random(); 
+                    
+//                     const leafLen = 65; 
+//                     const leafWidth = 22 * Math.sin(l * Math.PI) * (w - 0.5); 
+                    
+//                     if (isRight) {
+//                         x = stemX + l * leafLen;
+//                         y = (20 - leafPos) + l * 30 + (Math.random() - 0.5); 
+//                         z = leafWidth + (Math.random() - 0.5);
+//                     } else {
+//                         x = stemX - l * leafLen;
+//                         y = (20 - leafPos) + l * 25 + (Math.random() - 0.5); 
+//                         z = leafWidth + (Math.random() - 0.5);
+//                     }
+//                 }
+
+
+//                 const scaleDown = 0.5;
+//                 x *= scaleDown;
+//                 y *= scaleDown;
+//                 z *= scaleDown;
+                
+//                 y -= 16; 
  
 
             } else if (shape === 'christ') {
-                // 【重构十字架：具有立体感、圣光环和山丘基石】
-                const randC = Math.random();
-                if (randC < 0.50) {
-                    // 1. 垂直主干 (稍微有一点厚度)
-                    x = (Math.random() - 0.5) * 10; 
-                    y = (Math.random() - 0.5) * 120; 
-                    z = (Math.random() - 0.5) * 10;
-                } else if (randC < 0.65) {
-                    // 2. 水平横梁
-                    x = (Math.random() - 0.5) * 80; 
-                    y = 20 + (Math.random() - 0.5) * 10; 
-                    z = (Math.random() - 0.5) * 10;
-                } else if (randC < 0.85) {
-                    // 3. 圣光圆环 (Halo)
-                    const t = Math.random() * Math.PI * 2;
-                    const rRing = 32 + Math.random() * 4; 
-                    x = rRing * Math.cos(t);
-                    y = 20 + rRing * Math.sin(t);
-                    z = -8 + (Math.random() - 0.5) * 4; // 圆环稍微靠后一点
+                if (Math.random() < 0.65) {
+                    x = (Math.random() - 0.5) * 12; 
+                    y = (Math.random() - 0.5) * 110; 
+                    z = (Math.random() - 0.5) * 12;
                 } else {
-                    // 4. 底部的山丘/基石
-                    const t = Math.random() * Math.PI * 2;
-                    const rBase = Math.random() * 30;
-                    x = rBase * Math.cos(t);
-                    y = -60 - (30 - rBase) * 0.5 + (Math.random() - 0.5) * 2; // 缓坡向下
-                    z = rBase * Math.sin(t);
+                    x = (Math.random() - 0.5) * 85; 
+                    y = 15 + (Math.random() - 0.5) * 12; 
+                    z = (Math.random() - 0.5) * 12;
                 }
             } else if (shape === 'fireworks') {
                 const theta = Math.random() * Math.PI * 2, phi = Math.acos(Math.random() * 2 - 1), r = Math.pow(Math.random(), 1.5) * 80; 
